@@ -1,6 +1,7 @@
 const express = require("express");
 const {createBlogController, getBlogsController, getBlogByIdController, updateBlogIdConrtoller} = require("../controller/blogsController");
 const { default: axios } = require("axios");
+const { getFormDataEmail } = require("../controller/formdata");
 const router = express.Router();
 
 
@@ -59,6 +60,10 @@ router.get('/api/blogs/:id', getBlogByIdController);
 router.put('/api/blogs/update/:id', updateBlogIdConrtoller)
 // Create Blog
 router.post('/api/blogs/create', createBlogController);
+
+// ===========================================
+// formdata recive routes and send mails
+router.post('/api/book-demo', getFormDataEmail)
 
 
 module.exports = router;

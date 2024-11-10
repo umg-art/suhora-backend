@@ -1,6 +1,6 @@
 const express = require("express")
 const path = require("path");
-const router = require("./routes/route");
+const router = require("./routes/routes");
 const MySqlPool = require("./connection");
 const PORT = 8001
 const app = express();

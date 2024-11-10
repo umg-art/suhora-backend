@@ -131,13 +131,10 @@ async function updateBlogIdConrtoller(req, res) {
         const id = req.params.id;
         const { title, description, tags, image } = req.body;
 
-        const data = await MySqlPool.query(`UPDATE blogs SET title = ?, description = ?, tags = ?, image = ? WHERE ID = ?`, [title, description, tags, image, id]);
+         await MySqlPool.query(`UPDATE blogs SET title = ?, description = ?, tags = ?, image = ? WHERE ID = ?`, [title, description, tags, image, id]);
 
         // if(data.affectedRows > 0){
-            return res.status(200).send({
-                success: true,
-                message: "Blog updated successfully",
-            });
+            return  res.redirect('/admin/blogs');
         // }
         // else {
         //     return res.status(400).send({

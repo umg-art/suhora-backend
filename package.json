@@ -16,7 +16,8 @@
     "express-list-endpoints": "^7.1.0",
     "method-override": "^3.0.0",
     "mysql": "^2.18.1",
-    "mysql2": "^3.11.4"
+    "mysql2": "^3.11.4",
+    "nodemailer": "^6.9.16"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
