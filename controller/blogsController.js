@@ -88,10 +88,12 @@ async function getBlogByIdController(req, res,) {
 
 async function createBlogController(req, res) {
     try {
+        const { title, description, status, image, tags } = req.body;
 
-        const { title, slug, description, status = 'draft', image, tags } = req.body;
+        console.log("body response", req.body);
+        
 
-        if (!title || !slug || !description || !status || !image || !tags) {
+        if (!title || !description || !status || !image || !tags) {
             return res.status(400).send({
                 success: false,
                 message: "All fields are required",
@@ -99,6 +101,11 @@ async function createBlogController(req, res) {
             });
         }
 
+        // Generate a slug from the title
+        let slug = generateSlug(title)
+        slug = `${slug}-${Date.now()}`;
+
+        // Insert the blog data into the database
         const dataInsert = await MySqlPool.query(
             `INSERT INTO \`blogs\` (title, slug, description, status, image, tags) VALUES (?, ?, ?, ?, ?, ?)`,
             [title, slug, description, status, image, tags]
@@ -111,19 +118,31 @@ async function createBlogController(req, res) {
             });
         }
 
-        res.status(200).send({
-            success: true,
-            message: "New Blog Created Successfully",
-            data: dataInsert[0],
-        });
-    } catch (error) {
+        return res.redirect("/admin/blogs")
+
+    //    res.status(200).send({
+    //         success: true,
+    //         message: "New Blog Created Successfully",
+    //         data: dataInsert[0],
+    //     });
+    }
+     catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
             message: "Error creating blog",
-            error
+            error,
         });
     }
+}
+
+function generateSlug(title) {
+    return title
+        .toLowerCase()               // Convert title to lowercase
+        .replace(/[^a-z0-9\s-]/g, '') // Remove all non-alphanumeric characters except space and hyphen
+        .trim()                       // Remove spaces at the beginning and end
+        .replace(/\s+/g, '-')         // Replace spaces with hyphens
+        .replace(/-+/g, '-');         // Remove multiple consecutive hyphens
 }
 
 async function updateBlogIdConrtoller(req, res) {
@@ -153,4 +172,29 @@ async function updateBlogIdConrtoller(req, res) {
     }
 }
 
-module.exports = { getBlogsController, createBlogController, getBlogByIdController, updateBlogIdConrtoller }
+async function deleteBlogsController(req,res) {
+  try {
+   const id = req.params.id;
+   console.log("delete id");
+   if (!id) {
+    return res.status(400).json({ message: 'ID is required' });
+  }
+  const result = await MySqlPool.query(`DELETE FROM blogs WHERE id = ?`, [id]);
+
+  if(result.affectedRows === 0){
+  return res.status(400).json({ message: 'Blog not found' });
+  }
+
+  res.status(200).json({
+    message : "Blog delete succesfully"
+  })
+
+
+} 
+  catch (error) {
+    console.log("Error in delete blogs", error);
+    
+  }
+}
+
+module.exports = { getBlogsController, createBlogController, getBlogByIdController, updateBlogIdConrtoller, deleteBlogsController }

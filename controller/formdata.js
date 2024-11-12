@@ -19,7 +19,7 @@ async function getFormDataEmail(req, res) {
         }
 
         // Send email notification
-        await sendDemoEmail({ name, email, phone, message });
+        // await sendDemoEmail({ name, email, phone, message });
 
         // Insert the form data into the database only if the email is sent successfully
         const [userdata] = await connection.query(
@@ -58,6 +58,31 @@ async function getFormDataEmail(req, res) {
     }
 }
 
+async function getUserResponse(req,res) {
+    try {
+        const data = await MySqlPool.query('SELECT * FROM get_in_touch_fe')
+        if (!data) {
+            res.status(400).send({
+                success: false,
+                message: "data not found",
+            })
+        }
+        res.status(200).send({
+            success: true,
+            message: "data fetch succes",
+            data: data[0]
+        })
+    } 
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error creating blog",
+            error,
+        });
+    }
+}
+
 module.exports = {
-    getFormDataEmail
+    getFormDataEmail,getUserResponse
 }

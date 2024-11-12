@@ -4,7 +4,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Dashboard | Velzon - Admin & Dashboard Template</title>
+    <title>Suhora</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
@@ -370,48 +370,47 @@
                     <div class="row">
                         <div class="col">
                             <div class="h-100 container">
-                                <% if (locals.blog) { %>
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="card">
                                                 <div class="card-header align-items-center d-flex">
-                                                    <h4 class="card-title mb-0 flex-grow-1">Update Blog</h4>
+                                                    <h4 class="card-title mb-0 flex-grow-1">Create Blog</h4>
                                                 </div><!-- end card header -->
                                                 <div class="card-body">
                                                     <div class="live-preview">
-                                                        <form method="POST" action="/api/blogs/update/<%= blog.id %>?_method=PUT">
+                                                        <form method="POST" action="/api/blogs/create">
                                                             <div class="row g-3">
                                                                 <div class="col-lg-6">
                                                                     <div class="form-floating">
-                                                                        <input type="text" value="<%= blog.title %>" name="title" class="form-control" id="firstnamefloatingInput" placeholder="Enter your firstname">
+                                                                        <input type="text" name="title" class="form-control" id="firstnamefloatingInput" placeholder="Enter your firstname">
                                                                         <label for="firstnamefloatingInput">Title</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-12">
                                                                     <div class="form-floating">
-                                                                        <input type="text" value="<%= blog.description %>" class="form-control" id="lastnamefloatingInput" placeholder="Enter Description">
+                                                                        <input type="text" name="description" class="form-control" id="lastnamefloatingInput" placeholder="Enter Description">
                                                                         <label for="lastnamefloatingInput">Description</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                                     <div class="form-floating">
-                                                                        <select class="form-select" id="floatingSelect" name="status" aria-label="Floating label select example">
-                                                                            <option value="draft" <%= blog.status === 'draft' ? 'selected' : '' %>>Draft</option>
-                                                                            <option value="published" <%= blog.status === 'published' ? 'selected' : '' %>>Published</option>
-                                                                            <option value="archive" <%= blog.status === 'archive' ? 'selected' : '' %>>Archive</option>
+                                                                        <select name="status" class="form-select" id="floatingSelect" name="status" aria-label="Floating label select example">
+                                                                            <option value="draft">Draft</option>
+                                                                            <option value="published">Published</option>
+                                                                            <option value="archive">Archive</option>
                                                                         </select>
                                                                         <label for="floatingSelect">Blog Status</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                                     <div class="form-floating">
-                                                                        <input type="text" value="<%= blog.tags %>" class="form-control" id="passwordfloatingInput" placeholder="Enter Tags">
+                                                                        <input type="text" name="tags" class="form-control" id="passwordfloatingInput" placeholder="Enter Tags">
                                                                         <label for="passwordfloatingInput">Tags</label>
                                                                     </div>
                                                                 </div> 
                                                                 <div class="col-lg-4">
                                                                     <div class="form-floating">
-                                                                        <input type="url" value="<%= blog.image %>" class="form-control" id="zipfloatingInput" placeholder="Enter Image">
+                                                                        <input type="url" name="image" class="form-control" id="zipfloatingInput" placeholder="Enter Image">
                                                                         <label for="zipfloatingInput">Image</label>
                                                                     </div>
                                                                 </div>
@@ -427,7 +426,7 @@
                                             </div>
                                         </div>
                                     </div>    
-                                <% } %>
+    
                             </div>
                         </div>
                     </div>
