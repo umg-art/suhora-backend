@@ -23,7 +23,7 @@ async function getFormDataEmail(req, res) {
 
         // Insert the form data into the database only if the email is sent successfully
         const [userdata] = await connection.query(
-            `INSERT INTO clientreachout (name, email, phone, message) VALUES (?, ?, ?, ?)`,
+            `INSERT INTO get_in_touch_fe (name, email, phone, message) VALUES (?, ?, ?, ?)`,
             [name, email, phone, message]
         );
 
@@ -58,27 +58,56 @@ async function getFormDataEmail(req, res) {
     }
 }
 
-async function getUserResponse(req,res) {
+
+async function getUserResponse(req, res) {
     try {
-        const data = await MySqlPool.query('SELECT * FROM get_in_touch_fe')
-        if (!data) {
-            res.status(400).send({
-                success: false,
-                message: "data not found",
-            })
-        }
-        res.status(200).send({
-            success: true,
-            message: "data fetch succes",
-            data: data[0]
-        })
-    } 
+        let { draw, start, length, search, order } = req.query;
+
+        // Sanitize and validate start and length
+        start = parseInt(start) || 0;  // Default to 0 if invalid or missing
+        length = parseInt(length) || 10;  // Default to 10 if invalid or missing
+
+        const searchValue = search?.value || '';  // Extract search value from the query
+        const orderColumnIndex = order ? parseInt(order[0].column) : 0;  // Column index for ordering
+        const orderDir = order ? order[0].dir : 'desc';  // Order direction
+
+        // Map column indexes to database column names
+        const columns = ["id", "name", "email", "phone", "message"];
+        const orderByColumn = columns[orderColumnIndex] || 'id';  // Default to 'id' if no valid column
+
+        // Get total number of records (without filtering)
+        const [totalRecordsResult] = await MySqlPool.query('SELECT COUNT(*) AS total FROM get_in_touch_fe');
+        const totalRecords = totalRecordsResult[0].total;
+
+        // Get filtered records count and data
+        const [filteredRecordsResult] = await MySqlPool.query(
+            `SELECT COUNT(*) AS total FROM get_in_touch_fe WHERE name LIKE ? OR email LIKE ? OR phone LIKE ? OR message LIKE ?`,
+            [`%${searchValue}%`, `%${searchValue}%`, `%${searchValue}%`, `%${searchValue}%`]
+        );
+        const filteredRecords = filteredRecordsResult[0].total;
+
+        // Fetch paginated data with search, order, and limit
+        const [data] = await MySqlPool.query(
+            `SELECT * FROM get_in_touch_fe WHERE name LIKE ? OR email LIKE ? OR phone LIKE ? OR message LIKE ? 
+             ORDER BY ${orderByColumn} ${orderDir}
+             LIMIT ?, ?`,
+            [`%${searchValue}%`, `%${searchValue}%`, `%${searchValue}%`, `%${searchValue}%`, start, length]
+        );
+
+        // Respond with data in DataTables format
+        res.status(200).json({
+            draw: parseInt(draw),  // draw count to synchronize with DataTables request
+            recordsTotal: totalRecords,  // total number of records
+            recordsFiltered: filteredRecords,  // total number of records after filtering
+            data: data  // array of user response records
+        });
+    }
     catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
-            message: "Error creating blog",
-            error,
+            message: "Error getting user responses",
+            error
         });
     }
 }

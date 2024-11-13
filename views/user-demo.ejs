@@ -54,7 +54,7 @@
                         </span>
                     </a>
 
-                    <a href="index.html" class="logo logo-light">
+                    <a href="/" class="logo logo-light">
                         <span class="logo-sm">
                             <img src="/assets/images/logo-sm.png" alt="" height="22">
                         </span>
@@ -311,7 +311,7 @@
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="index.html" class="logo logo-light">
+                <a href="/" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="/assets/images/logo-sm.png" alt="" height="22">
                     </span>
@@ -375,12 +375,10 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Description</th>
-                                            <th>Status</th>
-                                            <th>Image</th>
-                                            <th>Tags</th>
-                                            <th>Actions</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Messages</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -434,35 +432,27 @@
             "columns": [
                 { "data": "id" },
                 { 
-                    "data": "title",
+                    "data": "name",
                     "render": function (data, type, row) {
-                        return `<div class="truncate">${data.length > 100 ? data.substr(0, 100) + '…' : data}</div>`;
+                        return `<div class="truncate">${data}</div>`;
                     }
                  },
                 {
-                    "data": "description",
+                    "data": "email",
                     "render": function (data, type, row) {
-                        return `<div class="truncate">${data.length > 100 ? data.substr(0, 100) + '…' : data}</div>`;
+                        return `<div class="truncate">${data}</div>`;
                     }
                 },
-                { "data": "status" },
                 {
-                    "data": "image",
+                    "data": "phone",
                     "render": function (data, type, row) {
-                        return `
-                         <a href="${data}" target="_blank" class="text-decoration-none">
-                             <img src="${data}" alt="Image" style="width: 50px; height: auto;">
-                        </a>
-                       `;
+                        return `<div class="truncate">${data}</div>`;
                     }
                 },
-                { "data": "tags" },
                 {
-                    "data": null,
+                    "data": 'message',
                     "render": function (data, type, row) {
-                        return `
-                            <a href="/admin/blogs/${row.id}" class="btn btn-primary btn-sm edit-btn " data-id="${row.id}">Edit</a>
-                        `;
+                        return `<div class="truncate">${data}</div>`;
                     }
                 }
             ],
@@ -471,7 +461,7 @@
             },
             "ajax": {
                 'type': "GET",
-                "url": '/api/blogs',
+                "url": '/api/user-response',
                 "contentType": "application/json; charset=utf-8",
                 "dataType": "json",
                 "dataSrc": function (json) {
@@ -480,15 +470,6 @@
                 }
             }
         });
-
-        // Edit button handler
-        $(document).on('click', '.edit-btn', function () {
-            const id = $(this).data('id');
-            // You can implement the edit functionality here (e.g., open an edit form)
-            console.log(`Edit clicked for ID: ${id}`);
-            // Example: window.location.href = `/edit-blog/${id}`;
-        });
-
     });
 </script>
 

@@ -91,7 +91,6 @@ async function createBlogController(req, res) {
         const { title, description, status, image, tags } = req.body;
 
         console.log("body response", req.body);
-        
 
         if (!title || !description || !status || !image || !tags) {
             return res.status(400).send({
