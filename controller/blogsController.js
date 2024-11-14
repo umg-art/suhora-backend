@@ -1,5 +1,6 @@
 const MySqlPool = require("../connection");
 
+
 async function getBlogsController(req, res) {
     try {
         let { draw, start, length, search, order } = req.query;
@@ -88,9 +89,12 @@ async function getBlogByIdController(req, res,) {
 
 async function createBlogController(req, res) {
     try {
-        const { title, description, status, image, tags } = req.body;
 
-        console.log("body response", req.body);
+        const { title, description, status, tags } = req.body;
+        const image = req.file;
+
+        console.log("image details", image);
+        
 
         if (!title || !description || !status || !image || !tags) {
             return res.status(400).send({
@@ -104,10 +108,12 @@ async function createBlogController(req, res) {
         let slug = generateSlug(title)
         slug = `${slug}-${Date.now()}`;
 
-        // Insert the blog data into the database
-        const dataInsert = await MySqlPool.query(
+        const imagePath = `/public/assets/uploads/blogs/${image.filename}`;  // Image path to store
+
+        // // Insert the blog data into the database
+          const dataInsert = await MySqlPool.query(
             `INSERT INTO \`blogs\` (title, slug, description, status, image, tags) VALUES (?, ?, ?, ?, ?, ?)`,
-            [title, slug, description, status, image, tags]
+            [title, slug, description, status, imagePath, tags]
         );
 
         if (!dataInsert) {
@@ -116,8 +122,8 @@ async function createBlogController(req, res) {
                 message: "Failed to insert blog",
             });
         }
-
-        return res.redirect("/admin/blogs")
+        req.flash('info', 'Blog Created Successfully!')
+        return res.redirect("/admin/blogs");
 
     //    res.status(200).send({
     //         success: true,
@@ -147,13 +153,14 @@ function generateSlug(title) {
 async function updateBlogIdConrtoller(req, res) {
     try {
         const id = req.params.id;
-        const { title, description, tags, image } = req.body;
+        const { title, description,status, tags, image } = req.body;
 
-         await MySqlPool.query(`UPDATE blogs SET title = ?, description = ?, tags = ?, image = ? WHERE ID = ?`, [title, description, tags, image, id]);
+         await MySqlPool.query(`UPDATE blogs SET title = ?, description = ?,status = ? tags = ?, image = ? WHERE ID = ?`, [title, description,status, tags, image, id]);
 
         // if(data.affectedRows > 0){
-            return  res.redirect('/admin/blogs');
-        // }
+            req.flash('info', 'Blog Updated Successfully!')
+            res.redirect('/admin/blogs');
+            // }
         // else {
         //     return res.status(400).send({
         //         success: false,

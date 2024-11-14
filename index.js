@@ -6,17 +6,28 @@ const PORT = 8001
 const app = express();
 const getEndpoints = require('express-list-endpoints');
 const methodOverride = require("method-override");
-
+const session = require('express-session');
+const flash = require('connect-flash');
+require('dotenv').config();
 
 
 // set the ejs view engine
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
+app.set("views", path.join(__dirname, "views"))
+
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({extended : true}))
+app.use(express.urlencoded({extended : false}))
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(methodOverride('_method')); // method override for form
+app.use(methodOverride('_method'));
+app.use(session({
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+  }));
+  app.use(flash());
 
 
 // app.get("/",(req,res)=>{
