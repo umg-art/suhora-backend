@@ -61,7 +61,7 @@
                                                 </div><!-- end card header -->
                                                 <div class="card-body">
                                                     <div class="live-preview">
-                                                        <form method="POST" action="/api/events/update/<%= blog.id %>?_method=PUT">
+                                                        <form method="POST" enctype="multipart/form-data" action="/api/events/update/<%= blog.id %>?_method=PUT">
                                                             <div class="row g-3">
                                                                 <div class="col-lg-6">
                                                                     <div class="form-floating">
@@ -95,9 +95,15 @@
                                                                 </div> 
                                                                 
                                                                 <div class="col-lg-4">
-                                                                    <label for="zipfloatingInput">Image</label> <br>
+                                                                    <label for="zipfloatingInput">Current image</label><br>
                                                                     <div class="form-floating">
-                                                                        <input type="url" value="<%= blog.image %>" name="image" class="form-control" id="zipfloatingInput" placeholder="Enter Image">
+                                                                       <img src="http://localhost:8001<%= blog.image %>" alt="no imag" height="167px">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <label for="zipfloatingInput">Image</label><br>
+                                                                    <div class="form-floating">
+                                                                        <input type="file" name="image" class="form-control" id="zipfloatingInput" placeholder="Enter Image">
                                                                     </div>
                                                                 </div>
                                                         

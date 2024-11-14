@@ -355,6 +355,10 @@ File: Main Css File
 .navbar-header .user-name-text {
   color: var(--vz-gray-700);
 }
+.ck-editor__editable {
+  text-align: left !important;
+}
+
 .truncate {
   max-width: 200px;    /* Adjust width as needed */
   white-space: nowrap;
@@ -9713,9 +9717,9 @@ div.code-toolbar > .toolbar button:hover {
   right: 0;
   left: auto !important;
 }
-.ck.ck-editor__editable_inline[dir=ltr] {
+/* .ck.ck-editor__editable_inline[dir=ltr] {
   text-align: right !important;
-}
+} */
 .ck.ck-dropdown__panel {
   -webkit-box-shadow: 0 5px 10px rgba(30, 32, 37, 0.12) !important;
           box-shadow: 0 5px 10px rgba(30, 32, 37, 0.12) !important;

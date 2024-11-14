@@ -95,9 +95,9 @@
                                                                         <label for="passwordfloatingInput">Tags</label>
                                                                     </div>
                                                                 </div>
-                                                        
+                                                               
                                                                 <div class="col-lg-4">
-                                                                    <label for="zipfloatingInput">Image :</label> <br>
+                                                                    <label for="zipfloatingInput">Image</label><br>
                                                                     <div class="form-floating">
                                                                         <input type="file" name="image" class="form-control" id="zipfloatingInput" placeholder="Enter Image">
                                                                     </div>
@@ -161,21 +161,23 @@
             Paragraph,
             Bold,
             Italic,
-            Font
+            Font,Alignment
         } from 'ckeditor5';
+
         ClassicEditor
     .create(document.querySelector('#editor'), {
-        plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
+        plugins: [ Essentials, Paragraph, Bold, Italic, Font,Alignment ],
         toolbar: [
             'undo', 'redo', '|', 'bold', 'italic', '|',
-            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
         ],
-        language: 'en',  // Set the language to English to default to LTR
+        language: 'en',
         alignment: {
-            options: ['left', 'center', 'right', 'justify']
+            options: ['left', 'center', 'justify']
         },
+         defaultAlignment: 'left',
         // Explicitly set the direction of text to left-to-right
-        textDirection: 'ltr'
+        // textDirection: 'left'
     })
     .then(editor => {
         window.editor = editor;
@@ -185,6 +187,12 @@
     });
 
     </script>
+    <style>
+        /* Ensure initial alignment is left */
+        .ck-editor__editable {
+            text-align: left !important;
+        }
+    </style>
     <!-- A friendly reminder to run on a server, remove this during the integration. -->
     <script>
         window.onload = function() {

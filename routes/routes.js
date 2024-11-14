@@ -156,7 +156,7 @@ router.post("/api/login", async (req, res) => {
 // ------------------------------------------------ Blog API Routes -----------------------------------
 router.get('/api/blogs', getBlogsController);  // Get all blogs list
 router.get('/api/blogs/:id', getBlogByIdController);  // Get blog by ID
-router.put('/api/blogs/update/:id', updateBlogIdConrtoller);  // Update blog by ID
+router.put('/api/blogs/update/:id', upload.single('image'), updateBlogIdConrtoller);  // Update blog by ID
 router.post('/api/blogs/create', upload.single('image') , createBlogController);  // Create blog
 
 // ------------------------------------------- Events API -------------------------------------------

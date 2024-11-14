@@ -36,13 +36,22 @@ const createEvent = async (title, slug, description, status, image, tags) => {
     return result.insertId;  // Return the inserted event ID
 };
 
-const updateEventById = async (id, title, description,status, tags, image) => {
-    const [result] = await MySqlPool.query(
-        `UPDATE events SET title = ?, description = ?, status = ?, tags = ?, image = ? WHERE ID = ?`,
-        [title, description,status, tags, image, id]
-    );
+const updateEventById = async (id, title, description, status, tags, imagePath) => {
+    const query = imagePath
+        ? `UPDATE events SET title = ?, description = ?, status = ?, tags = ?, image = ? WHERE ID = ?`
+        : `UPDATE events SET title = ?, description = ?, status = ?, tags = ? WHERE ID = ?`;
+
+    const params = imagePath
+        ? [title, description, status, tags, imagePath, id]
+        : [title, description, status, tags, id];
+
+    const [result] = await MySqlPool.query(query, params);
+
+    // Logging to verify update success
+    console.log("Update result:", result);
     return result.affectedRows > 0;
 };
+
 
 const deleteEventById = async (id) => {
     const [result] = await MySqlPool.query(`DELETE FROM events WHERE id = ?`, [id]);

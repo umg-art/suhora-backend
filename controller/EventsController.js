@@ -1,3 +1,4 @@
+const MySqlPool = require('../connection');
 const eventModel = require('../models/eventModel');
 
 // Get all events with pagination, search, and ordering
@@ -39,7 +40,7 @@ async function getEvents(req, res) {
 // Get event by ID
 async function getEventById(req, res) {
     try {
-        console.log("req" ,req);
+        // console.log("req" ,req);
         const id = req.params.id;
         const data = await eventModel.getEventById(id);
 
@@ -82,7 +83,7 @@ async function createEvent(req, res) {
 
         let slug = generateSlug(title);
         slug = `${slug}-${Date.now()}`;
-        const imagePath = `/public/assets/uploads/events/${image.filename}`;  // Image path to store
+        const imagePath = `/assets/uploads/events/${image.filename}`;  // Image path to store
 
 
         const insertId = await eventModel.createEvent(title, slug, description, status, imagePath, tags);
@@ -111,11 +112,27 @@ async function createEvent(req, res) {
 async function updateEvent(req, res) {
     try {
         const id = req.params.id;
-        // console.log("test update callted" , req.body)
+        const { title, description, status, tags } = req.body;
+        const image = req.file;
+        console.log(req.file); 
 
-        const { title, description,status, tags, image } = req.body;
-        console.log("test update callted" , )
-        const updated = await eventModel.updateEventById(id, title, description,status, tags, image);
+        // Determine the new image path or retain existing image
+        let imagePath = image ? `/assets/uploads/events/${image.filename}` : null;
+
+        // Check if an image was uploaded; if not, use the existing image
+        if (!imagePath) {
+            const [event] = await MySqlPool.query('SELECT image FROM events WHERE ID = ?', [id]);
+            if (event.length > 0) {
+                imagePath = event[0].image; // Retain existing image if no new image is uploaded
+            } else {
+                imagePath = null; // No existing image
+            }
+        }
+
+        // Logging to check if imagePath is being set correctly
+        console.log("Image path being used for update:", imagePath);
+
+        const updated = await eventModel.updateEventById(id, title, description, status, tags, imagePath);
 
         if (!updated) {
             return res.status(400).send({
@@ -123,12 +140,10 @@ async function updateEvent(req, res) {
                 message: "Event not found or no changes made",
             });
         }
-        req.flash('info', 'Event Updated Successfully!')
-        return res.redirect("/admin/events")
-        // res.status(200).send({
-        //     success: true,
-        //     message: "Event updated successfully",
-        // });
+
+        req.flash('info', 'Event Updated Successfully!');
+        return res.redirect("/admin/events");
+
     } catch (error) {
         console.error(error);
         res.status(500).send({
@@ -138,6 +153,7 @@ async function updateEvent(req, res) {
         });
     }
 }
+
 
 // Delete event by ID
 async function deleteEvent(req, res) {

@@ -170,3 +170,13 @@
         <!-- Left Sidebar End -->
         <!-- Vertical Overlay-->
         <div class="vertical-overlay"></div>
+
+
+        <script>
+            // Automatically set the active class based on the current URL
+            document.querySelectorAll('#navbar-nav .nav-link').forEach(link => {
+                if (link.href === window.location.href) {
+                    link.classList.add('active');
+                }
+            });
+        </script>

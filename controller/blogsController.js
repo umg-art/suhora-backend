@@ -93,7 +93,7 @@ async function createBlogController(req, res) {
         const { title, description, status, tags } = req.body;
         const image = req.file;
 
-        console.log("image details", image);
+        // console.log("image details", image);
         
 
         if (!title || !description || !status || !image || !tags) {
@@ -108,7 +108,7 @@ async function createBlogController(req, res) {
         let slug = generateSlug(title)
         slug = `${slug}-${Date.now()}`;
 
-        const imagePath = `/public/assets/uploads/blogs/${image.filename}`;  // Image path to store
+        const imagePath = `/assets/uploads/blogs/${image.filename}`;  // Image path to store
 
         // // Insert the blog data into the database
           const dataInsert = await MySqlPool.query(
@@ -153,20 +153,38 @@ function generateSlug(title) {
 async function updateBlogIdConrtoller(req, res) {
     try {
         const id = req.params.id;
-        const { title, description,status, tags, image } = req.body;
+        // console.log("re,body", req.body);
+        
+        const { title, description,status, tags } = req.body;
+        const image = req.file;
 
-         await MySqlPool.query(`UPDATE blogs SET title = ?, description = ?,status = ? tags = ?, image = ? WHERE ID = ?`, [title, description,status, tags, image, id]);
+        console.log("image details in update", image);
+        const imagePath = image ? `/assets/uploads/blogs/${image.filename}` : null;
 
-        // if(data.affectedRows > 0){
-            req.flash('info', 'Blog Updated Successfully!')
-            res.redirect('/admin/blogs');
-            // }
-        // else {
-        //     return res.status(400).send({
-        //         success: false,
-        //         message: "Blog not found or no changes made",
-        //     });
-        // }
+
+      // Construct the SQL query dynamically based on whether imagePath is set
+      let query = `UPDATE blogs SET title = ?, description = ?, status = ?, tags = ?`;
+      const queryParams = [title, description, status, tags];
+
+      if (imagePath) {
+          query += `, image = ?`;
+          queryParams.push(imagePath);
+      }
+
+      query += ` WHERE ID = ?`;
+      queryParams.push(id);
+
+      const dataInsert = await MySqlPool.query(query, queryParams);
+
+      if (!dataInsert) {
+          return res.status(400).send({
+              success: false,
+              message: "Failed to update blog",
+          });
+      }
+
+      req.flash('info', 'Blog Updated Successfully!');
+      return res.redirect('/admin/blogs');
     }
     catch (error) {
         console.log(error);
