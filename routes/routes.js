@@ -6,10 +6,14 @@ const eventController = require('../controller/EventsController');
 const router = express.Router();
 const path = require('path');
 const multer  = require('multer')
-const fs = require('fs')
+const fs = require('fs');
+const {  getAllGalleryImages,
+    createGalleryInstance,
+    deleteGalleryImageById } = require("../controller/galleryController");
 
 const uploadDirBlog = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'blogs');
 const uploadDirEvent = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'events');
+const uploadGallery = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'gallery');
 
 // for upload blog image disk 
 if (!fs.existsSync(uploadDirBlog)) {
@@ -18,6 +22,10 @@ if (!fs.existsSync(uploadDirBlog)) {
   }
   if (!fs.existsSync(uploadDirEvent)) {
     fs.mkdirSync(uploadDirEvent, { recursive: true });
+    // console.log('Event uploads directory created:', uploadDirEvent);
+}
+if (!fs.existsSync(uploadGallery)) {
+    fs.mkdirSync(uploadGallery, { recursive: true });
     // console.log('Event uploads directory created:', uploadDirEvent);
 }
 
@@ -35,7 +43,6 @@ const storageforEvent = multer.diskStorage({
 
   const storageforBlog = multer.diskStorage({
     destination: (req, file, cb) => {
-      // Log the destination path to check if it's correct
       console.log("Upload directory:", uploadDirBlog);
       cb(null, uploadDirBlog); // Use the absolute path to the uploads directory
     },
@@ -44,11 +51,32 @@ const storageforEvent = multer.diskStorage({
       cb(null, Date.now() + path.extname(file.originalname));
     }
   });
+  const storageGallery = multer.diskStorage({
+    destination: (req, file, cb) => {
+        console.log("Upload directory:", uploadGallery);
+        cb(null, uploadGallery); // Use the absolute path to the uploads directory
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);  // Get the file extension
+        cb(null, Date.now() + ext);  // Use the current timestamp to ensure unique filenames
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+        return cb(new Error('Only image files are allowed'), false);  // Reject non-image files
+    }
+    cb(null, true);  // Accept the file
+};
 
 const upload = multer({ storage : storageforBlog });
 const uploadEvents = multer({ storage : storageforEvent });
 
-
+const uploadImages = multer({
+    storage: storageGallery,
+    fileFilter,
+    limits: { files: 10 }  
+}).array('images[]', 10);
 
 
 // Check if the user is logged in (session validation)
@@ -62,6 +90,24 @@ const isAuthenticated = (req, res, next) => {
 
 router.get("/", (req,res)=>{
   return res.redirect("/admin/events")
+})
+// ---------------------------------------------- gallery  -----------------------------------------
+router.get("/admin/gallery",isAuthenticated, async(req,res)=>{
+  try {
+    const response = await axios.get("http://localhost:8001/api/gallery");
+    if (response.data.success) {
+        return res.render("gallery/index", { blog: response.data.data[0] });
+    } else {
+        return res.render("gallery/index", { errorMessage: "No image found" });
+    }
+  } catch (error) {
+    console.error("Something went wrong", error);
+    return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+  }
+})
+
+router.get("/admin/gallery/create", isAuthenticated, (req,res)=>{
+    res.render("gallery/create")
 })
 
 // ---------------------------------------------- Blog Routes -----------------------------------------
@@ -137,6 +183,8 @@ router.get("/admin/user-response", isAuthenticated, async (req, res) => {
         return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
     }
 });
+// ---------------------------------------- Gallery --------------------------------------
+
 
 // ---------------------------------------- Login API ----------------------------------------
 router.post("/api/login", async (req, res) => {
@@ -154,6 +202,7 @@ router.post("/api/login", async (req, res) => {
 });
 
 // ------------------------------------------------ Blog API Routes -----------------------------------
+
 router.get('/api/blogs', getBlogsController);  // Get all blogs list
 router.get('/api/blogs/:id', getBlogByIdController);  // Get blog by ID
 router.put('/api/blogs/update/:id', upload.single('image'), updateBlogIdConrtoller);  // Update blog by ID
@@ -163,11 +212,16 @@ router.post('/api/blogs/create', upload.single('image') , createBlogController);
 router.get('/api/events', eventController.getEvents);  // Get all events with pagination
 router.get('/api/event/:id', eventController.getEventById);  // Get event by ID
 router.post('/api/events/create',uploadEvents.single('image') , eventController.createEvent);  // Create a new event
-router.put('/api/events/update/:id', eventController.updateEvent);  // Update event by ID
+router.put('/api/events/update/:id',uploadEvents.single('image'),  eventController.updateEvent);  // Update event by ID
 // router.delete('/api/events/:id', eventController.deleteEvent);  // Delete event by ID
 
 // Form data routes (for user demo)
 router.post('/api/book-demo', getFormDataEmail);
 router.get("/api/user-response", getUserResponse);
+
+//------------------------------------------- Gallery ------------------------------
+router.get('/api/gallery', getAllGalleryImages)
+router.delete('/api/gallery/delete/:id', deleteGalleryImageById)
+router.post('/api/gallery/create',uploadImages, createGalleryInstance)
 
 module.exports = router;

@@ -48,7 +48,7 @@ const updateEventById = async (id, title, description, status, tags, imagePath) 
     const [result] = await MySqlPool.query(query, params);
 
     // Logging to verify update success
-    console.log("Update result:", result);
+    // console.log("Update result:", result);
     return result.affectedRows > 0;
 };
 

@@ -158,7 +158,7 @@ async function updateBlogIdConrtoller(req, res) {
         const { title, description,status, tags } = req.body;
         const image = req.file;
 
-        console.log("image details in update", image);
+        // console.log("image details in update", image);
         const imagePath = image ? `/assets/uploads/blogs/${image.filename}` : null;
 
 
@@ -199,7 +199,7 @@ async function updateBlogIdConrtoller(req, res) {
 async function deleteBlogsController(req,res) {
   try {
    const id = req.params.id;
-   console.log("delete id");
+//    console.log("delete id");
    if (!id) {
     return res.status(400).json({ message: 'ID is required' });
   }

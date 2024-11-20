@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Suhora</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+
+    <!-- jsvectormap css -->
+    <link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Swiper slider css -->
+    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+    <!-- Bootstrap Css -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/app.css" rel="stylesheet" type="text/css" />
+
+    <!-- custom Css-->
+    <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        <%- include('../layout/header'); -%>
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="h-100 container">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-header align-items-center d-flex">
+                                                <h4 class="card-title mb-0 flex-grow-1">Upload Gallery Image</h4>
+                                            </div><!-- end card header -->
+                                            <div class="card-body">
+                                                <div class="live-preview">
+                                                    <form id="galleryForm" method="POST" enctype="multipart/form-data">
+                                                        <div class="row g-3">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-floating">
+                                                                    <input type="text" name="tag" class="form-control" id="tag" placeholder="Enter your tag" required>
+                                                                    <label for="tag">Tag</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                <label for="images">Images</label><br>
+                                                                <div class="form-floating">
+                                                                    <input multiple type="file" name="images" class="form-control" id="images" accept="image/*" onchange="previewImages(event)" required>
+                                                                </div>
+                                                            </div>
+                                                    
+                                                            <div id="image-preview" class="mt-3">
+                                                                <div class="row" id="preview-container">
+                                                                    <!-- Dynamic preview images will appear here -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                <div class="text-end">
+                                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    
+                                                    <!-- Preview area for images -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--start back-to-top-->
+    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+    <!--end back-to-top-->
+
+    <script>
+        // Function to update content for editor (if applicable)
+        function updateEditorContent() {
+            var editorContent = window.editor.getData();
+            document.getElementById('editorContent').value = editorContent;
+        }
+
+        // Preview images before upload
+        function previewImages(event) {
+        var files = event.target.files;
+        var previewContainer = document.getElementById('preview-container');
+        previewContainer.innerHTML = ''; // Clear previous previews
+
+        // Loop through selected files
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            // Check file type (only images allowed)
+            if (file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.classList.add('img-fluid', 'col-3', 'mb-2');
+                    previewContainer.appendChild(imgElement);
+                }
+                reader.readAsDataURL(file);
+            } else {
+                alert('Only image files are allowed. Please select a valid image.');
+            }
+        }
+    }
+
+    // Handle form submission with multiple image uploads
+    document.getElementById('galleryForm').onsubmit = function(event) {
+    event.preventDefault();  // Prevent default form submission
+
+    var form = new FormData();  // Create a new FormData object
+    var tag = document.getElementById('tag').value;  // Get the tag input value
+    var images = document.getElementById('images').files;  // Get the file input
+
+    // Validate that the tag is provided and that there are selected images
+    if (!tag || images.length === 0) {
+        alert('Please provide a tag and select at least one image.');
+        return;
+    }
+
+    // Append the tag to the FormData
+    form.append('tag', tag);
+
+    // Append each image to the FormData
+    for (var i = 0; i < images.length; i++) {
+        form.append('images[]', images[i]);  // Appending each image to the array
+    }
+
+    // Send the FormData via fetch
+    fetch('/api/gallery/create', {
+        method: 'POST',
+        body: form,  // The FormData automatically sets the correct enctype
+    })
+    .then(response => response.json())  // Parse the JSON response
+    .then(data => {
+        if (data.success) {
+            alert('Gallery images uploaded successfully!');
+            // Optionally, reset the form or redirect after success
+            document.getElementById('galleryForm').reset();  // Reset the form fields
+            document.getElementById('preview-container').innerHTML = '';  // Clear image previews
+        } else {
+            alert('Failed to upload images. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error uploading images:', error);
+        alert('An error occurred. Please try again.');
+    });
+};
+    </script>
+
+    <!-- JAVASCRIPT -->
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/node-waves/waves.min.js"></script>
+    <script src="/assets/libs/feather-icons/feather.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <!-- apexcharts -->
+    <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+    <!-- Vector map-->
+    <script src="/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+    <script src="/assets/libs/jsvectormap/maps/world-merc.js"></script>
+    <!--Swiper slider js-->
+    <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- App js -->
+    <script src="/assets/js/app.js"></script>
+
+</body>
+
+</html>

@@ -71,7 +71,7 @@ async function createEvent(req, res) {
     try {
         const { title, description, status, tags } = req.body;
         const image = req.file;
-        console.log("image details", image);
+        // console.log("image details", image);
 
         if (!title || !description || !status || !image || !tags) {
             return res.status(400).send({
@@ -113,8 +113,9 @@ async function updateEvent(req, res) {
     try {
         const id = req.params.id;
         const { title, description, status, tags } = req.body;
+
         const image = req.file;
-        console.log(req.file); 
+        // console.log("update events", req.file, req.body); 
 
         // Determine the new image path or retain existing image
         let imagePath = image ? `/assets/uploads/events/${image.filename}` : null;
@@ -130,7 +131,7 @@ async function updateEvent(req, res) {
         }
 
         // Logging to check if imagePath is being set correctly
-        console.log("Image path being used for update:", imagePath);
+        // console.log("Image path being used for update:", imagePath,title);
 
         const updated = await eventModel.updateEventById(id, title, description, status, tags, imagePath);
 
