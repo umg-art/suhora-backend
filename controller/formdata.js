@@ -7,7 +7,7 @@ async function getFormDataEmail(req, res) {
         // Start a transaction
         await connection.beginTransaction();
 
-        const { name, email, phone, message,resource } = req.body;
+        const { name, email, phone, message, resource,subject } = req.body;
 
         // Validate if all fields are provided
         if (!name || !email || !phone || !message || !resource) {
@@ -19,7 +19,7 @@ async function getFormDataEmail(req, res) {
         }
 
         // Send email notification
-        await sendDemoEmail({ name, email, phone, message,resource });
+        await sendDemoEmail({ name, email, phone, message,resource, subject });
 
         // Insert the form data into the database only if the email is sent successfully
         const [userdata] = await connection.query(

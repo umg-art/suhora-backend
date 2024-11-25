@@ -198,7 +198,7 @@ router.post("/api/login", async (req, res) => {
 
     console.log("Data entered:", email, password);  // Corrected
 
-    if (email === "admin@gmail.com" && password === "123") {
+    if (email === process.env.ADMIN_LOGIN_EMAIL && password === process.env.ADMIN_LOGIN_PASSWORD) {
         req.session.uid = Date.now();
         return res.redirect("/admin/events");
     } else {

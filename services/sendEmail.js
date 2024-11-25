@@ -11,12 +11,12 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-async function sendDemoEmail({ name, email, phone, message,resource }) {
+async function sendDemoEmail({ name, email, phone, message,resource,subject }) {
     try {
         await transporter.sendMail({
             from: `<${email}>`, // sender address
-            to: "umang.prajapati026@gmail.com", // receiver address
-            subject: "Hello ✔, New user response received", // Subject line
+            to: process.env.EMAIL_SERVICE_MAIL, // receiver address
+            subject: "New Response : "+subject, // Subject line
             html: `
                 <html>
                     <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
