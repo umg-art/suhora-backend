@@ -3,6 +3,7 @@ const path = require("path");
 const router = require("./routes/routes");
 const MySqlPool = require("./connection");
 const PORT = process.env.PORT
+const cors = require('cors');
 const app = express();
 const methodOverride = require("method-override");
 const session = require('express-session');
@@ -20,6 +21,7 @@ app.use(express.urlencoded({extended : false}))
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(cors());
 app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false,

@@ -31,7 +31,7 @@ if (!fs.existsSync(uploadGallery)) {
 
 const storageforEvent = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("Upload directory:", uploadDirEvent); // Ensure the directory path is correct
+        // console.log("Upload directory:", uploadDirEvent); // Ensure the directory path is correct
         cb(null, uploadDirEvent);  // Use the absolute path to the uploads directory
     },
     filename: (req, file, cb) => {
@@ -43,7 +43,7 @@ const storageforEvent = multer.diskStorage({
 
   const storageforBlog = multer.diskStorage({
     destination: (req, file, cb) => {
-      console.log("Upload directory:", uploadDirBlog);
+    //   console.log("Upload directory:", uploadDirBlog);
       cb(null, uploadDirBlog); // Use the absolute path to the uploads directory
     },
     filename: (req, file, cb) => {
@@ -53,7 +53,7 @@ const storageforEvent = multer.diskStorage({
   });
   const storageGallery = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("Upload directory:", uploadGallery);
+        // console.log("Upload directory:", uploadGallery);
         cb(null, uploadGallery); // Use the absolute path to the uploads directory
     },
     filename: (req, file, cb) => {
@@ -92,19 +92,25 @@ router.get("/", (req,res)=>{
   return res.redirect("/admin/events")
 })
 // ---------------------------------------------- gallery  -----------------------------------------
-router.get("/admin/gallery",isAuthenticated, async(req,res)=>{
-  try {
-    const response = await axios.get("http://localhost:8001/api/gallery");
-    if (response.data.success) {
-        return res.render("gallery/index", { blog: response.data.data[0] });
-    } else {
+router.get("/admin/gallery", isAuthenticated, async (req, res) => {
+    try {
+      const successMessage = req.flash('info'); 
+      const response = await axios.get("http://localhost:8001/api/gallery");
+  
+      if (response.data.success) {
+        return res.render("gallery/index", {
+          blog: response.data.data[0],  // Pass the fetched gallery data (assuming data[0] contains gallery info)
+          info: successMessage.length > 0 ? successMessage[0] : null,  // Pass the flash message if it exists
+        });
+      } else {
         return res.render("gallery/index", { errorMessage: "No image found" });
+      }
+    } catch (error) {
+      console.error("Something went wrong", error);
+      return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
     }
-  } catch (error) {
-    console.error("Something went wrong", error);
-    return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
-  }
-})
+  });
+  
 
 router.get("/admin/gallery/create", isAuthenticated, (req,res)=>{
     res.render("gallery/create")
@@ -237,6 +243,6 @@ router.get("/api/user-response", getUserResponse);
 //------------------------------------------- Gallery ------------------------------
 router.get('/api/gallery', getAllGalleryImages)
 router.delete('/api/gallery/delete/:id', deleteGalleryImageById)
-router.post('/api/gallery/create',uploadImages, createGalleryInstance)
+router.post('/api/gallery/create', uploadImages, createGalleryInstance)
 
 module.exports = router;
