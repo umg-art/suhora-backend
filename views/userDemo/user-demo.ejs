@@ -53,6 +53,7 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Phone</th>
+                                            <th>Resources</th>
                                             <th>Messages</th>
                                         </tr>
                                     </thead>
@@ -122,6 +123,13 @@
                     "data": "phone",
                     "render": function (data, type, row) {
                         return `<div class="truncate">${data}</div>`;
+                    }
+                },
+                {
+                    "data": "resource",
+                    "render": function (data, type, row) {
+                        return data ? `<div class="truncate">${data}</div>` : `<div class="truncate">-</div>`;
+
                     }
                 },
                 {

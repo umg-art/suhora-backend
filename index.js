@@ -2,8 +2,8 @@ const express = require("express")
 const path = require("path");
 const router = require("./routes/routes");
 const MySqlPool = require("./connection");
+const PORT = process.env.PORT
 const app = express();
-const getEndpoints = require('express-list-endpoints');
 const methodOverride = require("method-override");
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -39,9 +39,9 @@ app.use("/", router)
 MySqlPool.query('SELECT 1').then(()=>{
     console.log("MySql Connected");
     // If sql connect then this line execute
-    app.listen(process.env.PORT,  ()=> {
-        console.table(getEndpoints(app));
-        console.log(`server started at http://localhost:${process.env.PORT}`)
+    app.listen(PORT,  ()=> {
+        // console.table(getEndpoints(app));
+        console.log(`server started at http://localhost:${PORT}`)
     })
 })
 .catch((err)=> console.log("error on start", err))

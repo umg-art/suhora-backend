@@ -28,22 +28,32 @@ const getEventById = async (id) => {
     return data[0] || null;
 };
 
-const createEvent = async (title, slug, description, status, image, tags) => {
+const createEvent = async (title, slug, description, status, image, tags,publish_at) => {
     const [result] = await MySqlPool.query(
-        `INSERT INTO events (title, slug, description, status, image, tags) VALUES (?, ?, ?, ?, ?, ?)`,
-        [title, slug, description, status, image, tags]
+        `INSERT INTO events (title, slug, description, status, image, tags, publish_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [title, slug, description, status, image, tags,publish_at]
     );
     return result.insertId;  // Return the inserted event ID
 };
 
-const updateEventById = async (id, title, description, status, tags, imagePath) => {
-    const query = imagePath
-        ? `UPDATE events SET title = ?, description = ?, status = ?, tags = ?, image = ? WHERE ID = ?`
-        : `UPDATE events SET title = ?, description = ?, status = ?, tags = ? WHERE ID = ?`;
+const updateEventById = async (id, title, description, status, tags, imagePath, publish_at) => {
+    let query = `UPDATE events SET title = ?, description = ?, status = ?, tags = ?`;
+    const params = [title, description, status, tags];
 
-    const params = imagePath
-        ? [title, description, status, tags, imagePath, id]
-        : [title, description, status, tags, id];
+    // Include the imagePath if provided
+    if (imagePath) {
+        query += `, image = ?`;
+        params.push(imagePath);
+    }
+
+    // Include the published_at field if it's provided
+    if (publish_at) {
+        query += `, publish_at = ?`;
+        params.push(publish_at);
+    }
+
+    query += ` WHERE ID = ?`;
+    params.push(id);
 
     const [result] = await MySqlPool.query(query, params);
 

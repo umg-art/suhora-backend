@@ -85,8 +85,13 @@ async function createEvent(req, res) {
         slug = `${slug}-${Date.now()}`;
         const imagePath = `/assets/uploads/events/${image.filename}`;  // Image path to store
 
+         // Determine the 'published_at' field value based on status
+         let publish_at = null;
+         if (status === 'published') {
+             publish_at = new Date().toISOString().slice(0, 19).replace('T', ' '); // Get current timestamp in 'YYYY-MM-DD HH:mm:ss' format
+         }
 
-        const insertId = await eventModel.createEvent(title, slug, description, status, imagePath, tags);
+        const insertId = await eventModel.createEvent(title, slug, description, status, imagePath, tags,publish_at);
         if (!insertId) {
             return res.status(400).send({
                 success: false,
@@ -113,14 +118,11 @@ async function updateEvent(req, res) {
     try {
         const id = req.params.id;
         const { title, description, status, tags } = req.body;
-
         const image = req.file;
-        // console.log("update events", req.file, req.body); 
 
         // Determine the new image path or retain existing image
         let imagePath = image ? `/assets/uploads/events/${image.filename}` : null;
 
-        // Check if an image was uploaded; if not, use the existing image
         if (!imagePath) {
             const [event] = await MySqlPool.query('SELECT image FROM events WHERE ID = ?', [id]);
             if (event.length > 0) {
@@ -130,10 +132,25 @@ async function updateEvent(req, res) {
             }
         }
 
-        // Logging to check if imagePath is being set correctly
-        // console.log("Image path being used for update:", imagePath,title);
+        // Get the current status of the event from the database
+        const [currentEvent] = await MySqlPool.query('SELECT status FROM events WHERE ID = ?', [id]);
 
-        const updated = await eventModel.updateEventById(id, title, description, status, tags, imagePath);
+        if (currentEvent.length === 0) {
+            return res.status(404).send({
+                success: false,
+                message: "Event not found",
+            });
+        }
+
+        const currentStatus = currentEvent[0].status;
+
+        // Determine if we need to update 'published_at' (only if status changes from 'draft' to 'published')
+        let publish_at = null;
+        if (status === 'published' && currentStatus !== 'published') {
+            publish_at = new Date().toISOString().slice(0, 19).replace('T', ' '); // Current timestamp in 'YYYY-MM-DD HH:mm:ss' format
+        }
+
+        const updated = await eventModel.updateEventById(id, title, description, status, tags, imagePath, publish_at);
 
         if (!updated) {
             return res.status(400).send({

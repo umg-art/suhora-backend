@@ -7,10 +7,10 @@ async function getFormDataEmail(req, res) {
         // Start a transaction
         await connection.beginTransaction();
 
-        const { name, email, phone, message } = req.body;
+        const { name, email, phone, message,resource } = req.body;
 
         // Validate if all fields are provided
-        if (!name || !email || !phone || !message) {
+        if (!name || !email || !phone || !message || !resource) {
             return res.status(400).send({
                 success: false,
                 message: "All fields are required",
@@ -19,12 +19,12 @@ async function getFormDataEmail(req, res) {
         }
 
         // Send email notification
-        // await sendDemoEmail({ name, email, phone, message });
+        await sendDemoEmail({ name, email, phone, message,resource });
 
         // Insert the form data into the database only if the email is sent successfully
         const [userdata] = await connection.query(
-            `INSERT INTO get_in_touch_fe (name, email, phone, message) VALUES (?, ?, ?, ?)`,
-            [name, email, phone, message]
+            `INSERT INTO get_in_touch_fe (name, email, phone, message, resource) VALUES (?, ?, ?, ?,?)`,
+            [name, email, phone, message,resource]
         );
 
         // If data was successfully inserted, commit the transaction
@@ -69,10 +69,10 @@ async function getUserResponse(req, res) {
 
         const searchValue = search?.value || '';  // Extract search value from the query
         const orderColumnIndex = order ? parseInt(order[0].column) : 0;  // Column index for ordering
-        const orderDir = order ? order[0].dir : 'desc';  // Order direction
+        const orderDir = order ? order[0].dir : 'asc';  // Order direction
 
         // Map column indexes to database column names
-        const columns = ["id", "name", "email", "phone", "message"];
+        const columns = ["id", "name", "email", "phone", "message", "resource"];
         const orderByColumn = columns[orderColumnIndex] || 'id';  // Default to 'id' if no valid column
 
         // Get total number of records (without filtering)

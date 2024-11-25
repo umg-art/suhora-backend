@@ -89,13 +89,10 @@ async function getBlogByIdController(req, res,) {
 
 async function createBlogController(req, res) {
     try {
-
         const { title, description, status, tags } = req.body;
-        const image = req.file;
+        const image = req.file;        
 
-        // console.log("image details", image);
-        
-
+        // Check if all required fields are provided
         if (!title || !description || !status || !image || !tags) {
             return res.status(400).send({
                 success: false,
@@ -110,10 +107,16 @@ async function createBlogController(req, res) {
 
         const imagePath = `/assets/uploads/blogs/${image.filename}`;  // Image path to store
 
-        // // Insert the blog data into the database
-          const dataInsert = await MySqlPool.query(
-            `INSERT INTO \`blogs\` (title, slug, description, status, image, tags) VALUES (?, ?, ?, ?, ?, ?)`,
-            [title, slug, description, status, imagePath, tags]
+        // Determine the 'published_at' field value based on status
+        let publish_at = null;
+        if (status === 'published') {
+            publish_at = new Date().toISOString().slice(0, 19).replace('T', ' '); // Get current timestamp in 'YYYY-MM-DD HH:mm:ss' format
+        }
+
+        // Insert the blog data into the database
+        const dataInsert = await MySqlPool.query(
+            `INSERT INTO \`blogs\` (title, slug, description, status, image, tags, publish_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [title, slug, description, status, imagePath, tags, publish_at]
         );
 
         if (!dataInsert) {
@@ -122,16 +125,10 @@ async function createBlogController(req, res) {
                 message: "Failed to insert blog",
             });
         }
-        req.flash('info', 'Blog Created Successfully!')
+        req.flash('info', 'Blog Created Successfully!');
         return res.redirect("/admin/blogs");
 
-    //    res.status(200).send({
-    //         success: true,
-    //         message: "New Blog Created Successfully",
-    //         data: dataInsert[0],
-    //     });
-    }
-     catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
@@ -140,6 +137,7 @@ async function createBlogController(req, res) {
         });
     }
 }
+
 
 function generateSlug(title) {
     return title
@@ -153,38 +151,64 @@ function generateSlug(title) {
 async function updateBlogIdConrtoller(req, res) {
     try {
         const id = req.params.id;
-        // console.log("re,body", req.body);
-        
-        const { title, description,status, tags } = req.body;
+
+        const { title, description, status, tags } = req.body;
         const image = req.file;
 
-        // console.log("image details in update", image);
+        // Handle image upload if a new image is provided
         const imagePath = image ? `/assets/uploads/blogs/${image.filename}` : null;
 
+        // Get the current status from the database before updating
+        const currentBlog = await MySqlPool.query('SELECT status FROM blogs WHERE ID = ?', [id]);
+        
+        // Check if the current blog exists
+        if (currentBlog.length === 0) {
+            return res.status(404).send({
+                success: false,
+                message: "Blog not found",
+            });
+        }
 
-      // Construct the SQL query dynamically based on whether imagePath is set
-      let query = `UPDATE blogs SET title = ?, description = ?, status = ?, tags = ?`;
-      const queryParams = [title, description, status, tags];
+        const currentStatus = currentBlog[0].status;
 
-      if (imagePath) {
-          query += `, image = ?`;
-          queryParams.push(imagePath);
-      }
+        // Determine if we need to update 'published_at' (only if status changes from 'draft' to 'published')
+        let published_at;
+        if (status === 'published' && currentStatus !== 'published') {
+            published_at = new Date().toISOString().slice(0, 19).replace('T', ' '); // Current timestamp in 'YYYY-MM-DD HH:mm:ss' format
+        }
 
-      query += ` WHERE ID = ?`;
-      queryParams.push(id);
+        // Construct the SQL query dynamically based on whether imagePath is set
+        let query = `UPDATE blogs SET title = ?, description = ?, status = ?, tags = ?`;
+        const queryParams = [title, description, status, tags];
 
-      const dataInsert = await MySqlPool.query(query, queryParams);
+        // Include the 'published_at' field if necessary
+        if (published_at) {
+            query += `, publish_at = ?`;
+            queryParams.push(published_at);
+        }
 
-      if (!dataInsert) {
-          return res.status(400).send({
-              success: false,
-              message: "Failed to update blog",
-          });
-      }
+        // Include the image field if a new image is provided
+        if (imagePath) {
+            query += `, image = ?`;
+            queryParams.push(imagePath);
+        }
 
-      req.flash('info', 'Blog Updated Successfully!');
-      return res.redirect('/admin/blogs');
+        // Add the WHERE condition
+        query += ` WHERE ID = ?`;
+        queryParams.push(id);
+
+        // Execute the update query
+        const dataInsert = await MySqlPool.query(query, queryParams);
+
+        if (!dataInsert) {
+            return res.status(400).send({
+                success: false,
+                message: "Failed to update blog",
+            });
+        }
+
+        req.flash('info', 'Blog Updated Successfully!');
+        return res.redirect('/admin/blogs');
     }
     catch (error) {
         console.log(error);

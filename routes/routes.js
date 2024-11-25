@@ -190,16 +190,31 @@ router.get("/admin/user-response", isAuthenticated, async (req, res) => {
 router.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
 
+    console.log("Data entered:", email, password);  // Corrected
+
     if (email === "admin@gmail.com" && password === "123") {
-        // Create session with uid as the current timestamp
         req.session.uid = Date.now();
-        // Redirect to the events page after successful login
         return res.redirect("/admin/events");
     } else {
-        // If credentials are incorrect, return an error message
         return res.render("login", { errorMessage: "Invalid credentials, please try again." });
     }
 });
+
+// ---------------------------------------- Logout API ----------------------------------------
+router.get("/api/logout", (req, res) => {
+    // Destroy the session and redirect to the login page
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).send({
+                success: false,
+                message: "Error while logging out, please try again."
+            });
+        }
+        // Redirect to the login page after destroying the session
+        return res.redirect("/admin/login");
+    });
+});
+
 
 // ------------------------------------------------ Blog API Routes -----------------------------------
 
