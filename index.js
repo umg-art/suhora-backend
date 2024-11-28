@@ -21,7 +21,11 @@ app.use(express.urlencoded({extended : false}))
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
-app.use(cors());
+app.use(cors({
+    origin : '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Authorization', 'Content-Type'],
+}));
 app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false,

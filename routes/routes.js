@@ -222,7 +222,6 @@ router.get("/api/logout", (req, res) => {
     });
 });
 
-
 // ------------------------------------------------ Blog API Routes -----------------------------------
 
 router.get('/api/blogs', checkHeader, getBlogsController);  // Get all blogs list
