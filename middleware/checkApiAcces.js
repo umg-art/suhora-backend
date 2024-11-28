@@ -1,18 +1,19 @@
-const API_ACCESS_KEY = process.env.API_ACCESS_KEY
+const checkHeader = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
 
-// Middleware to check API Access Key
-const checkApiAccessKey = (req, res, next) => {
-    const apiKey = req.headers['api-access-key'];  // Get the key from the request header
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
 
-    if (!apiKey || apiKey !== API_ACCESS_KEY) {
-        return res.status(403).json({ success: false, message: 'Invalid or missing API access key' });
+    if (token === process.env.API_ACCESS_KEY) {
+      return next();  // Proceed to the next middleware/handler
     }
+  }
 
-    // If the key is valid, continue to the next middleware or route
-    next();
+  // If no valid token is found, return an error response
+  res.status(403).json({ message: 'Forbidden: Invalid or missing token' });
 };
 
+module.exports = checkHeader;
 
-module.exports = {
-    checkApiAccessKey
-}
+
+module.exports = checkHeader;

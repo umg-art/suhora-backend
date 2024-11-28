@@ -10,6 +10,7 @@ const fs = require('fs');
 const {  getAllGalleryImages,
     createGalleryInstance,
     deleteGalleryImageById } = require("../controller/galleryController");
+const checkHeader = require("../middleware/checkApiAcces");
 
 const uploadDirBlog = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'blogs');
 const uploadDirEvent = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'events');
@@ -224,25 +225,25 @@ router.get("/api/logout", (req, res) => {
 
 // ------------------------------------------------ Blog API Routes -----------------------------------
 
-router.get('/api/blogs', getBlogsController);  // Get all blogs list
-router.get('/api/blogs/:id', getBlogByIdController);  // Get blog by ID
-router.put('/api/blogs/update/:id', upload.single('image'), updateBlogIdConrtoller);  // Update blog by ID
-router.post('/api/blogs/create', upload.single('image') , createBlogController);  // Create blog
+router.get('/api/blogs', checkHeader, getBlogsController);  // Get all blogs list
+router.get('/api/blogs/:id',checkHeader, getBlogByIdController);  // Get blog by ID
+router.put('/api/blogs/update/:id',checkHeader, upload.single('image'), updateBlogIdConrtoller);  // Update blog by ID
+router.post('/api/blogs/create',checkHeader, upload.single('image') , createBlogController);  // Create blog
 
 // ------------------------------------------- Events API -------------------------------------------
-router.get('/api/events', eventController.getEvents);  // Get all events with pagination
-router.get('/api/event/:id', eventController.getEventById);  // Get event by ID
-router.post('/api/events/create',uploadEvents.single('image') , eventController.createEvent);  // Create a new event
-router.put('/api/events/update/:id',uploadEvents.single('image'),  eventController.updateEvent);  // Update event by ID
+router.get('/api/events',checkHeader, eventController.getEvents);  // Get all events with pagination
+router.get('/api/event/:id',checkHeader, eventController.getEventById);  // Get event by ID
+router.post('/api/events/create',checkHeader, uploadEvents.single('image') , eventController.createEvent);  // Create a new event
+router.put('/api/events/update/:id',checkHeader, uploadEvents.single('image'),  eventController.updateEvent);  // Update event by ID
 // router.delete('/api/events/:id', eventController.deleteEvent);  // Delete event by ID
 
 // Form data routes (for user demo)
-router.post('/api/book-demo', getFormDataEmail);
-router.get("/api/user-response", getUserResponse);
+router.post('/api/book-demo',checkHeader,  getFormDataEmail);
+router.get("/api/user-response",checkHeader, getUserResponse);
 
 //------------------------------------------- Gallery ------------------------------
-router.get('/api/gallery', getAllGalleryImages)
-router.delete('/api/gallery/delete/:id', deleteGalleryImageById)
-router.post('/api/gallery/create', uploadImages, createGalleryInstance)
+router.get('/api/gallery',checkHeader, getAllGalleryImages)
+router.delete('/api/gallery/delete/:id',checkHeader, deleteGalleryImageById)
+router.post('/api/gallery/create',checkHeader, uploadImages, createGalleryInstance)
 
 module.exports = router;
