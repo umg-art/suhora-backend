@@ -10,7 +10,6 @@ const checkHeader = (req, res, next) => {
     }
   }
 
-  // If no valid token is found, return an error response
   res.status(403).json({ message: 'Forbidden: Invalid or missing token' });
 };
 

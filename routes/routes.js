@@ -96,7 +96,11 @@ router.get("/", (req,res)=>{
 router.get("/admin/gallery", isAuthenticated, async (req, res) => {
     try {
       const successMessage = req.flash('info'); 
-      const response = await axios.get("http://localhost:8001/api/gallery");
+      const response = await axios.get("http://localhost:8001/api/gallery", {
+        headers : {
+            Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+        }
+      });
   
       if (response.data.success) {
         return res.render("gallery/index", {
@@ -132,7 +136,11 @@ router.get("/admin/blogs", isAuthenticated, async (req, res) => {
 router.get("/admin/blogs/:id", isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id;
-        const response = await axios.get(`http://localhost:8001/api/blogs/${id}`);
+        const response = await axios.get(`http://localhost:8001/api/blogs/${id}`, {
+            headers : {
+                Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+            }
+        });
         if (response.data.success) {
             return res.render("blogs/editBlogs", { blog: response.data.data[0] });
         } else {
@@ -163,7 +171,11 @@ router.get("/admin/events/:id", isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id;
         console.log("Request ID:", id);  // Debugging the id parameter
-        const response = await axios.get(`http://localhost:8001/api/event/${id}`);
+        const response = await axios.get(`http://localhost:8001/api/event/${id}`, {
+            headers : {
+                Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+            }
+        });
 
         if (response.data.success) {
             return res.render("events/edit", { blog: response.data.data });
@@ -179,7 +191,11 @@ router.get("/admin/events/:id", isAuthenticated, async (req, res) => {
 // ---------------------------------------- User Response -------------------------------------
 router.get("/admin/user-response", isAuthenticated, async (req, res) => {
     try {
-        const response = await axios.get("http://localhost:8001/api/user-response");
+        const response = await axios.get("http://localhost:8001/api/user-response", {
+            headers : {
+                Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+            }
+        });
         if (response.data.success) {
             return res.render("userDemo/user-demo", { blog: response.data.data[0] });
         } else {
