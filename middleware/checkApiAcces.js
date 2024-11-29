@@ -1,6 +1,6 @@
 const checkHeader = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  console.log("Authorization Header: ", authHeader);  // Debugging line
+  // console.log("Authorization Header: ", authHeader);  // Debugging line
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];

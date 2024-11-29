@@ -58,7 +58,7 @@
                                                 </div><!-- end card header -->
                                                 <div class="card-body">
                                                     <div class="live-preview">
-                                                        <form method="POST" enctype="multipart/form-data" action="/api/blogs/update/<%= blog.id %>?_method=PUT">
+                                                        <form id="blog-form" method="POST" enctype="multipart/form-data" action="/api/blogs/update/<%= blog.id %>?_method=PUT">
                                                             <div class="row g-3">
                                                                 <div class="col-lg-6">
                                                                     <div class="form-floating">
@@ -185,6 +185,45 @@
         .catch(error => {
             console.error(error);
         });
+
+
+
+
+    const token = "hsdguefg65sws%xsn$zsxs"; 
+    document.getElementById('blog-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+     console.log("create token ", token);
+     
+        // Check if the token exists
+        if (!token) {
+            alert('Authorization token is missing');
+            return; // Exit the function if the token is missing
+        }
+
+        // Prepare form data using FormData
+        const formData = new FormData(this); // 'this' refers to the form element
+
+        // Make a fetch request with the Authorization header and form data
+        fetch(this.action, {
+            method: this.method,
+            headers: {
+                'Authorization': 'Bearer ' + token, // Add the Authorization header
+            },
+            body: formData // Attach the form data
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Blog updated successfully!');
+                this.reset();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Something went wrong. Please try again.');
+        });
+    });
 
     </script>
     <!-- A friendly reminder to run on a server, remove this during the integration. -->

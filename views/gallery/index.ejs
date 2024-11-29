@@ -132,66 +132,92 @@
     });
     </script>
 <script>
-    $(document).ready(function () {
-        $('#dbtables').DataTable({
-            "order": [[0, "asc"]],
-            "processing": true,
-            "serverSide": true,
-            "initComplete": function (settings, json) {
-                $('#dbtables').show();
-            },
-            "select": true,
-            "searching": true,  // Enables search box
-            "info": true,       // Shows table info
-            "paging": true,     // Enables pagination
-            "pageLength": 10,   // Default entries per page
-            "columns": [
-                { "data": "id" },
-                { 
-                    "data": "tag",
-                    "render": function (data, type, row) {
-                        return `<div> #${data}</div>`;
-                    }
-                },
-                {
-                    "data": "img_url",
-                    "render": function (data, type, row) {
-                        const imageUrl = data.replace('/public', '');
-                        return `
-                         <a href="${imageUrl}" target="_blank" class="text-decoration-none">
-                             <img src="${imageUrl}" alt="Image" style="width: auto; height: 120px;">
-                        </a>
-                       `;
-                    }
-                },
-                {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        return `
-                            <form method="POST" action="/api/gallery/delete/${row.id}?_method=DELETE" style="display:inline-block;">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        `;
-                    }
+   $(document).ready(function () {
+    $('#dbtables').DataTable({
+        "order": [[0, "asc"]],
+        "processing": true,
+        "serverSide": true,
+        "initComplete": function (settings, json) {
+            $('#dbtables').show();
+        },
+        "select": true,
+        "searching": true,  // Enables search box
+        "info": true,       // Shows table info
+        "paging": true,     // Enables pagination
+        "pageLength": 10,   // Default entries per page
+        "columns": [
+            { "data": "id" },
+            { 
+                "data": "tag",
+                "render": function (data, type, row) {
+                    return `<div> #${data}</div>`;
                 }
-            ],
-            "language": {
-                "emptyTable": "No Data to show!"
             },
-            "ajax": {
-                'type': "GET",
-                "url": '/api/gallery',
-                "contentType": "application/json; charset=utf-8",
-                "dataType": "json",
-                "dataSrc": function (json) {
-                    return json.data;
-                },
-                "headers": {
-                    'authorization': `Bearer hsdguefg65sws%xsn$zsxs`, // Replace 'YOUR_API_KEY' with the actual key or environment variable
-                }       
+            {
+                "data": "img_url",
+                "render": function (data, type, row) {
+                    const imageUrl = data.replace('/public', '');
+                    return `
+                     <a href="${imageUrl}" target="_blank" class="text-decoration-none">
+                         <img src="${imageUrl}" alt="Image" style="width: auto; height: 120px;">
+                    </a>
+                   `;
+                }
+            },
+            {
+                "data": null,
+                "render": function (data, type, row) {
+                    return `
+                        <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
+                    `;
+                }
             }
-        });
+        ],
+        "language": {
+            "emptyTable": "No Data to show!"
+        },
+        "ajax": {
+            'type': "GET",
+            "url": '/api/gallery',
+            "contentType": "application/json; charset=utf-8",
+            "dataType": "json",
+            "dataSrc": function (json) {
+                return json.data;
+            },
+            "headers": {
+                'authorization': `Bearer hsdguefg65sws%xsn$zsxs`, // Authorization header
+            }       
+        }
     });
+
+    // Handle delete button click
+    $('#dbtables').on('click', '.delete-btn', function() {
+        const id = $(this).data('id'); // Get the ID of the row to delete
+
+        if (confirm('Are you sure you want to delete this item?')) {
+            // Make an AJAX request to delete the item
+            $.ajax({
+                url: `/api/gallery/delete/${id}`,
+                type: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer hsdguefg65sws%xsn$zsxs',  // Pass the Authorization token in the header
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Item deleted successfully!');
+                        $('#dbtables').DataTable().ajax.reload();  // Reload the table data
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        }
+    });
+});
+
 </script>
 
 

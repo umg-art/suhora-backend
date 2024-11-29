@@ -151,9 +151,12 @@
         form.append('images[]', images[i]);  // Appending each image to the array
     }
 
-    // Send the FormData via fetch
+    const token = "hsdguefg65sws%xsn$zsxs"; 
     fetch('/api/gallery/create', {
         method: 'POST',
+        headers: {
+                'Authorization': 'Bearer ' + token, // Add the Authorization header
+            },
         body: form,  // The FormData automatically sets the correct enctype
     })
     .then(response => response.json())  // Parse the JSON response

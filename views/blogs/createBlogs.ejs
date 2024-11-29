@@ -58,7 +58,7 @@
                                                 </div><!-- end card header -->
                                                 <div class="card-body">
                                                     <div class="live-preview">
-                                                        <form method="POST" action="/api/blogs/create" onsubmit="updateEditorContent()" enctype="multipart/form-data">
+                                                        <form id="blog-form" method="POST" action="/api/blogs/create" onsubmit="updateEditorContent()" enctype="multipart/form-data">
                                                             <div class="row g-3">
                                                                 <div class="col-lg-6">
                                                                     <div class="form-floating">
@@ -185,6 +185,41 @@
         console.error(error);
     });
 
+    const token = "hsdguefg65sws%xsn$zsxs"; 
+    document.getElementById('blog-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+     console.log("create token ", token);
+     
+        // Check if the token exists
+        if (!token) {
+            alert('Authorization token is missing');
+            return; // Exit the function if the token is missing
+        }
+
+        // Prepare form data using FormData
+        const formData = new FormData(this); // 'this' refers to the form element
+
+        // Make a fetch request with the Authorization header and form data
+        fetch(this.action, {
+            method: this.method,
+            headers: {
+                'Authorization': 'Bearer ' + token, // Add the Authorization header
+            },
+            body: formData // Attach the form data
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Blog created successfully!');
+                this.reset();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Something went wrong. Please try again.');
+        });
+    });
     </script>
     <style>
         /* Ensure initial alignment is left */
@@ -211,19 +246,14 @@
     <!-- JAVASCRIPT -->
     <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/libs/simplebar/simplebar.min.js"></script>
-    <script src="/assets/libs/node-waves/waves.min.js"></script>
     <script src="/assets/libs/feather-icons/feather.min.js"></script>
     <script src="/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
     <script src="/assets/js/plugins.js"></script>
-    <!-- apexcharts -->
-    <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
-
     <!-- Vector map-->
     <script src="/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
     <script src="/assets/libs/jsvectormap/maps/world-merc.js"></script>
 
     <!--Swiper slider js-->
-    <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
 
     <!-- Dashboard init -->
     <script src="/assets/js/pages/dashboard-ecommerce.init.js"></script>

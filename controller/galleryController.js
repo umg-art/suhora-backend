@@ -90,7 +90,7 @@ async function deleteGalleryImageById(req, res) {
         }
 
         const image = await galleryModel.getGalleryImageByID(id);
-        console.log('Image record:', image);  // Check the content of the image record
+        // console.log('Image record:', image);  // Check the content of the image record
 
         if (!image) {
             return res.status(400).json({ message: 'Gallery image not found' });
@@ -98,7 +98,7 @@ async function deleteGalleryImageById(req, res) {
 
         // Extract the filename from img_url
         const filename = image.img_url.replace('/assets/uploads/gallery/', '');  // Remove the base path
-        console.log('Extracted filename:', filename);
+        // console.log('Extracted filename:', filename);
 
         if (!filename) {
             return res.status(400).json({ message: 'Invalid image filename' });
@@ -106,12 +106,12 @@ async function deleteGalleryImageById(req, res) {
 
         // Construct the path to the image file
         const imagePath = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'gallery', filename);
-        console.log('Image path:', imagePath);
+        // console.log('Image path:', imagePath);
 
         // Check if the file exists before trying to delete it
         fs.stat(imagePath, (err, stats) => {
             if (err || !stats.isFile()) {
-                console.error('File not found:', err);
+                // console.error('File not found:', err);
                 return res.status(400).json({
                     success: false,
                     message: 'Image file does not exist on the server',
@@ -121,7 +121,7 @@ async function deleteGalleryImageById(req, res) {
             // If file exists, proceed to delete it
             fs.unlink(imagePath, (err) => {
                 if (err) {
-                    console.error('Error deleting image file:', err);
+                    // console.error('Error deleting image file:', err);
                     return res.status(500).json({
                         success: false,
                         message: 'Error deleting image file from server',
@@ -136,7 +136,7 @@ async function deleteGalleryImageById(req, res) {
                         }
 
                         req.flash('info', 'Image Deleted Successfully!');
-                        return res.redirect("/admin/gallery");
+                        return res.status(200).json({ success: true, message: 'Images Deleted successfully!' });
                     })
                     .catch((error) => {
                         console.error('Error deleting from database:', error);

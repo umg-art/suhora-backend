@@ -126,7 +126,7 @@ async function createBlogController(req, res) {
             });
         }
         req.flash('info', 'Blog Created Successfully!');
-        return res.redirect("/admin/blogs");
+        return res.status(200).json({ success: true, message: 'Blog Created Successfully!' });
 
     } catch (error) {
         console.log(error);
@@ -208,7 +208,7 @@ async function updateBlogIdConrtoller(req, res) {
         }
 
         req.flash('info', 'Blog Updated Successfully!');
-        return res.redirect('/admin/blogs');
+        return res.status(200).json({ success: true, message: 'Blog Update Successfully!' });
     }
     catch (error) {
         console.log(error);

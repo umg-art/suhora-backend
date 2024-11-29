@@ -101,7 +101,7 @@ async function createEvent(req, res) {
 
         req.flash('info', 'Event Created Successfully!') // send succes message
 
-        return res.redirect("/admin/events")
+        return res.status(200).json({ success: true, message: 'Event Created Successfully!' });
 
     } catch (error) {
         console.error(error);
@@ -160,7 +160,7 @@ async function updateEvent(req, res) {
         }
 
         req.flash('info', 'Event Updated Successfully!');
-        return res.redirect("/admin/events");
+        return res.status(200).json({ success: true, message: 'Event Updated Successfully!' });
 
     } catch (error) {
         console.error(error);
