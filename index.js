@@ -10,13 +10,13 @@ const session = require('express-session');
 const flash = require('connect-flash');
 require('dotenv').config();
 
-
+app.use(express.static(path.join(__dirname,"public")));
 // set the ejs view engine
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
-app.set("views", path.join(__dirname, "views"))
 
-app.use(express.static(path.join(__dirname, 'public')));
+
+//app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended : false}))
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());

@@ -15,6 +15,7 @@ const checkHeader = require("../middleware/checkApiAcces");
 const uploadDirBlog = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'blogs');
 const uploadDirEvent = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'events');
 const uploadGallery = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'gallery');
+const baseurl = 'http://127.0.0.1:7080'
 
 // for upload blog image disk 
 if (!fs.existsSync(uploadDirBlog)) {
@@ -96,7 +97,7 @@ router.get("/", (req,res)=>{
 router.get("/admin/gallery", isAuthenticated, async (req, res) => {
     try {
       const successMessage = req.flash('info'); 
-      const response = await axios.get("http://localhost:8001/api/gallery", {
+      const response = await axios.get(`${baseurl}/api/gallery`, {
         headers : {
             Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
         }
@@ -112,7 +113,7 @@ router.get("/admin/gallery", isAuthenticated, async (req, res) => {
       }
     } catch (error) {
       console.error("Something went wrong", error);
-      return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+      return res.status(500).json({ success: false, message: "An error occurred", error: error.message, req: req.url });
     }
   });
   
@@ -136,7 +137,7 @@ router.get("/admin/blogs", isAuthenticated, async (req, res) => {
 router.get("/admin/blogs/:id", isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id;
-        const response = await axios.get(`http://localhost:8001/api/blogs/${id}`, {
+        const response = await axios.get(`${baseurl}/api/blogs/${id}`, {
             headers : {
                 Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
             }
@@ -171,7 +172,7 @@ router.get("/admin/events/:id", isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id;
         console.log("Request ID:", id);  // Debugging the id parameter
-        const response = await axios.get(`http://localhost:8001/api/event/${id}`, {
+        const response = await axios.get(`${baseurl}/api/event/${id}`, {
             headers : {
                 Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
             }
@@ -191,7 +192,7 @@ router.get("/admin/events/:id", isAuthenticated, async (req, res) => {
 // ---------------------------------------- User Response -------------------------------------
 router.get("/admin/user-response", isAuthenticated, async (req, res) => {
     try {
-        const response = await axios.get("http://localhost:8001/api/user-response", {
+        const response = await axios.get(`${baseurl}/api/user-response`, {
             headers : {
                 Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
             }

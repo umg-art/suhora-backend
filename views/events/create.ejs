@@ -214,7 +214,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Events updated successfully!');
+                alert('Events created successfully!');
                 this.reset();
             } else {
                 alert('Error: ' + data.message);
