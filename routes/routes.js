@@ -11,6 +11,8 @@ const {  getAllGalleryImages,
     createGalleryInstance,
     deleteGalleryImageById } = require("../controller/galleryController");
 const checkHeader = require("../middleware/checkApiAcces");
+const { getAllJobsOpening } = require("../controller/jobsController");
+const { getJobDetails, getUserJobResponse } = require("../controller/jobApplication");
 
 const uploadDirBlog = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'blogs');
 const uploadDirEvent = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'events');
@@ -28,7 +30,6 @@ if (!fs.existsSync(uploadDirBlog)) {
 }
 if (!fs.existsSync(uploadGallery)) {
     fs.mkdirSync(uploadGallery, { recursive: true });
-    // console.log('Event uploads directory created:', uploadDirEvent);
 }
 
 const storageforEvent = multer.diskStorage({
@@ -115,7 +116,7 @@ router.get("/admin/gallery", isAuthenticated, async (req, res) => {
       console.error("Something went wrong", error);
       return res.status(500).json({ success: false, message: "An error occurred", error: error.message, req: req.url });
     }
-  });
+});
   
 
 router.get("/admin/gallery/create", isAuthenticated, (req,res)=>{
@@ -207,9 +208,32 @@ router.get("/admin/user-response", isAuthenticated, async (req, res) => {
         return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
     }
 });
-// ---------------------------------------- Gallery --------------------------------------
-
-
+// ---------------------------------------- Jobs --------------------------------------
+router.get("/admin/jobs", isAuthenticated, async (req, res) => {
+    try {
+      const successMessage = req.flash('info'); 
+      const response = await axios.get(`${baseurl}/api/get-all-jobs`, {
+        headers : {
+            Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+        }
+      });
+  
+      if (response.data.success) {
+        return res.render("joblist/index", {
+          blog: response.data.data[0],
+          info: successMessage.length > 0 ? successMessage[0] : null,
+        });
+      } else {
+        return res.render("joblist/index", { errorMessage: "No image found" });
+      }
+    } catch (error) {
+      console.error("Something went wrong", error);
+      return res.status(500).json({ success: false, message: "An error occurred", error: error.message, req: req.url });
+    }
+});
+router.get("/admin/jobs/create", isAuthenticated, async (req, res) => {
+    res.render("joblist/create");
+});
 // ---------------------------------------- Login API ----------------------------------------
 router.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
@@ -257,9 +281,16 @@ router.put('/api/events/update/:id',checkHeader, uploadEvents.single('image'),  
 router.post('/api/book-demo',checkHeader,  getFormDataEmail);
 router.get("/api/user-response",checkHeader, getUserResponse);
 
+
+// ------------------- Jobs Application --------------------------
+router.get("/api/jobs-application",checkHeader, getUserJobResponse)
+router.post('/api/jobs-response',checkHeader,  getJobDetails);
+
 //------------------------------------------- Gallery ------------------------------
 router.get('/api/gallery',checkHeader, getAllGalleryImages)
 router.delete('/api/gallery/delete/:id',checkHeader, deleteGalleryImageById)
 router.post('/api/gallery/create',checkHeader, uploadImages, createGalleryInstance)
 
+// -------------------------------Career ---------------------------------
+router.get("/api/get-all-jobs",checkHeader, getAllJobsOpening )
 module.exports = router;
