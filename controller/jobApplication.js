@@ -1,63 +1,14 @@
 const MySqlPool = require("../connection");
-// const { sendDemoEmail } = require("../services/sendEmail");
+const { deleteJobListById,getJobById, getAllJobs } = require("../models/jobsModel");
 
-async function getJobDetails(req, res) {
-    const connection = await MySqlPool.getConnection();
-    try {
-        // Start a transaction
-        await connection.beginTransaction();
-
-        const { name, email, phone, message, resource,subject } = req.body;
-
-        // Validate if all fields are provided
-        if (!name || !email || !phone || !message || !resource) {
-            return res.status(400).send({
-                success: false,
-                message: "All fields are required",
-                body: req.body,
-            });
-        }
-
-        // Send email notification
-        // await sendDemoEmail({ name, email, phone, message,resource, subject });
-
-        // Insert the form data into the database only if the email is sent successfully
-        const [userdata] = await connection.query(
-            `INSERT INTO get_in_touch_fe (name, email, phone, message, resource) VALUES (?, ?, ?, ?,?)`,
-            [name, email, phone, message,resource]
-        );
-
-        // If data was successfully inserted, commit the transaction
-        if (userdata.affectedRows > 0) {
-            await connection.commit();
-            return res.status(200).send({
-                success: true,
-                message: "Form submitted successfully, and email sent.",
-                data: userdata,
-            });
-        } else {
-            // Rollback if the data insertion fails
-            await connection.rollback();
-            return res.status(400).send({
-                success: false,
-                message: "Failed to insert data into the database.",
-            });
-        }
-    } catch (error) {
-        // Rollback the transaction in case of any errors (either email or DB)
-        await connection.rollback();
-        console.error("Error in getFormDataEmail:", error);
-        res.status(500).send({
-            success: false,
-            message: "Something went wrong",
-            error: error.message || error,
-        });
-    } finally {
-        // Release the connection back to the pool
-        connection.release();
-    }
+function generateSlug(title) {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') 
+        .trim()
+        .replace(/\s+/g, '-') 
+        .replace(/-+/g, '-');
 }
-
 
 async function getUserJobResponse(req, res) {
     try {
@@ -112,6 +63,168 @@ async function getUserJobResponse(req, res) {
     }
 }
 
+async function createJob(req,res) {
+    try {
+        console.log("log the request", req.body);
+        const { title, description, job_location, job_type, experience, employment_type, department, opening_count } = req.body;
+     
+        if (!title || !description || !job_location || !job_type || !experience || !employment_type || !department || !opening_count) {
+            return res.status(400).send({
+                success: false,
+                message: "All fields are required",
+                body: req.body,
+            });
+        }
+
+        let slug = generateSlug(title)
+        slug = `${slug}-${Date.now()}`;
+        
+        const dataInsert = await MySqlPool.query(
+            `INSERT INTO \`job_list\` (slug, title, description, job_location, job_type, experience, employment_type, department, opening_count) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [slug, title, description, job_location, job_type, experience, employment_type, department, opening_count]
+        );
+        if (!dataInsert) {
+            return res.status(400).send({
+                success: false,
+                message: "Failed to insert job",
+            });
+        }
+        return res.status(200).json({ success: true, message: 'Job Created Successfully!' });
+    } 
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error Creating job",
+            error
+        });
+    }
+}
+
+async function deleteJob(req, res) {
+    try {
+        const id = req.params.id;
+        if(!id){
+            return res.status(400).send({
+                succes: false,
+                message: "Id not found",
+            })
+        }
+        const deleteRecord = await deleteJobListById(id) 
+        if(!deleteRecord){
+            return res.status(400).json({success: false, message: "Something went wrong"});
+        }
+        return res.status(200).json({success: true, message: "Delete job succesfully!"});
+    } 
+    catch (error) {
+        console.log("error", error);
+        return res.status(500).json({success: false, message: "Internal server error", error});
+    }
+}
+
+async function getJobDetailById(req, res) {
+    try {
+        const id = req.params.id;
+        const data = await getJobById(id);
+
+        if (!data) {
+            return res.status(404).send({
+                success: false,
+                message: "Job not found",
+            });
+        }
+
+        res.status(200).send({
+            success: true,
+            message: "Job fetched successfully",
+            data,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            success: false,
+            message: "Error fetching job",
+            error,
+        });
+    }
+}
+
+async function getAllJobsOpening(req, res) {
+    try {
+        const { draw, start, length, search, order } = req.query;
+
+        const searchValue = search?.value || ''; 
+
+        const sortColumnIndex = order && order.length > 0 ? order[0].column : 0; 
+        const sortDirection = order && order.length > 0 ? order[0].dir : 'asc';
+
+        const columns = [
+            'title', 'skills', 'job_location', 'job_type', 'experience', 'employment_type', 'department', 'opening_count'
+        ];
+
+        const orderBy = columns[sortColumnIndex] || 'title'; // Default to 'title' if invalid index is provided
+
+        const result = await getAllJobs(searchValue, start, length, orderBy, sortDirection);
+
+        res.json({
+            draw: parseInt(draw, 10), 
+            recordsTotal: result.totalRecords,
+            recordsFiltered: result.filteredRecords, 
+            data: result.data
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching the job listings.' });
+    }
+}
+
+async function updateJob(req, res) {
+    try {
+        const id = req.params.id; 
+        console.log("update req", req.body);
+        
+        const { title, description, job_location, job_type, experience, employment_type, department, opening_count } = req.body;
+
+        if (!title || !description || !job_location || !job_type || !experience || !employment_type || !department || !opening_count) {
+            return res.status(400).send({
+                success: false,
+                message: "All fields are required",
+                body: req.body,
+            });
+        }
+
+        let slug = generateSlug(title);
+        slug = `${slug}-${Date.now()}`;
+
+        const dataUpdate = await MySqlPool.query(
+            `UPDATE \`job_list\` 
+            SET slug = ?, title = ?, description = ?, job_location = ?, job_type = ?, experience = ?, employment_type = ?, department = ?, opening_count = ? 
+            WHERE id = ?`,
+            [slug, title, description, job_location, job_type, experience, employment_type, department, opening_count, id]
+        );
+
+        if (dataUpdate.affectedRows === 0) {
+            return res.status(404).send({
+                success: false,
+                message: "Job not found",
+            });
+        }
+
+        return res.status(200).json({ success: true, message: 'Job Updated Successfully!' });
+    } 
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error Updating job",
+            error
+        });
+    }
+}
+
+
 module.exports = {
-    getJobDetails,getUserJobResponse
+    getUserJobResponse,createJob,deleteJob,getJobDetailById,getAllJobsOpening,updateJob
 }

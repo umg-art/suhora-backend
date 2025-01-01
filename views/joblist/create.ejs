@@ -1,26 +1,43 @@
 <!doctype html>
 <html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 
-<head>
-
+  <head>
     <meta charset="utf-8" />
     <title>Suhora</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      content="Premium Multipurpose Admin & Dashboard Template"
+      name="description"
+    />
     <meta content="Themesbrand" name="author" />
 
     <!-- jsvectormap css -->
-    <link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="/assets/libs/jsvectormap/css/jsvectormap.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
 
     <!--Swiper slider css-->
-    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="/assets/libs/swiper/swiper-bundle.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
 
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css"
+    />
 
     <!-- Layout config Js -->
     <script src="/assets/js/layout.js"></script>
     <!-- Bootstrap Css -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="/assets/css/bootstrap.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
     <!-- Icons Css -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <!-- App Css-->
@@ -29,218 +46,357 @@
 
     <!-- custom Css-->
     <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
-<!-- 
+    <!-- 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css"> -->
+  </head>
 
-
-</head>
-
-<body>
-
+  <body>
     <!-- Begin page -->
     <div id="layout-wrapper">
-
-        <%- include('../layout/header'); -%>
-        <!-- ============================================================== -->
-        <!-- Start right Content here -->
-        <!-- ============================================================== -->
-        <div class="main-content">
-
-            <div class="page-content">
-                <div class="container-fluid">
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="h-100 container">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="card-header align-items-center d-flex">
-                                                    <h4 class="card-title mb-0 flex-grow-1">Create Events</h4>
-                                                </div><!-- end card header -->
-                                                <div class="card-body">
-                                                    <div class="live-preview">
-                                                        <form id="blog-form" method="POST" action="/api/events/create" onsubmit="updateEditorContent()" enctype="multipart/form-data">
-                                                            <div class="row g-3">
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-floating">
-                                                                        <input type="text" name="title" class="form-control" id="firstnamefloatingInput" placeholder="Enter your title">
-                                                                        <label for="firstnamefloatingInput">Title</label>
-                                                                    </div>
-                                                                </div>
-                                                        
-                                                                <div class="col-lg-12">
-                                                                    <label for="lastnamefloatingInput">Description</label>
-                                                                    <div class="form-floating">
-                                                                        <!-- Textarea will be used by CKEditor -->
-                                                                        <textarea id="editor" name="description" class="form-control" placeholder="Enter Description"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                        
-                                                                <!-- Hidden input to store CKEditor content -->
-                                                                <input type="hidden" name="editorContent" id="editorContent" />
-                                                        
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-floating">
-                                                                        <select name="status" class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                                                            <option value="draft">Draft</option>
-                                                                            <option value="published">Published</option>
-                                                                        </select>
-                                                                        <label for="floatingSelect">Event Status</label>
-                                                                    </div>
-                                                                </div>
-                                                        
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-floating">
-                                                                        <input type="text" name="tags" class="form-control" id="passwordfloatingInput" placeholder="Enter Tags">
-                                                                        <label for="passwordfloatingInput">Tags</label>
-                                                                    </div>
-                                                                </div>
-                                                        
-                                                                <div class="col-lg-4">
-                                                                    <label for="zipfloatingInput">Image</label> <br>
-                                                                    <div class="form-floating">
-                                                                        <input type="file" name="image" class="form-control" id="zipfloatingInput" placeholder="Enter Image">
-                                                                    </div>
-                                                                </div>
-                                                        
-                                                                <div class="col-lg-12">
-                                                                    <div class="text-end">
-                                                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>    
-    
-                            </div>
+      <%- include('../layout/header'); -%>
+      <div class="main-content">
+        <div class="page-content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col">
+                <div class="h-100 container">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="card">
+                        <div class="card-header align-items-center d-flex">
+                          <h4 class="card-title mb-0 flex-grow-1">
+                            Create New Job
+                          </h4>
                         </div>
-                    </div>
+                        <!-- end card header -->
+                        <div class="card-body">
+                          <div class="live-preview">
+                            <form
+                              id="job-create-form"
+                              method="POST"
+                              action="/api/jobs/create"
+                              onsubmit="updateEditorContent()"
+                            >
+                              <div class="row g-3">
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <input
+                                      type="text"
+                                      name="title"
+                                      class="form-control"
+                                      id="firstnamefloatingInput"
+                                      placeholder="Enter your title"
+                                    />
+                                    <label for="firstnamefloatingInput"
+                                      >Job Title</label
+                                    >
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <select
+                                      name="job_type"
+                                      class="form-select"
+                                      id="floatingSelect"
+                                      aria-label="Floating label select example"
+                                    >
+                                      <option value="work_from_office">
+                                        Work from office (on-site)
+                                      </option>
+                                      <option value="work_from_home">
+                                        Work from home (remote-job)
+                                      </option>
+                                      <option value="hybrid_job">
+                                        Hybrid job (alternatives hours)
+                                      </option>
+                                    </select>
+                                    <label for="floatingSelect">Job Type</label>
+                                  </div>
+                                </div>
 
+                                <div class="col-lg-12">
+                                  <label for="lastnamefloatingInput"
+                                    >Job Description</label
+                                  >
+                                  <div class="form-floating">
+                                    <!-- Textarea will be used by CKEditor -->
+                                    <textarea
+                                      id="editor"
+                                      name="description"
+                                      class="form-control"
+                                      placeholder="Enter Description"
+                                    ></textarea>
+                                  </div>
+                                </div>
+
+                                <!-- Hidden input to store CKEditor content -->
+                                <input
+                                  type="hidden"
+                                  name="editorContent"
+                                  id="editorContent"
+                                />
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <input
+                                      type="text"
+                                      name="job_location"
+                                      class="form-control"
+                                      id="firstnamefloatingInput"
+                                      placeholder="Enter your title"
+                                    />
+                                    <label for="firstnamefloatingInput"
+                                      >Job location</label
+                                    >
+                                  </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <select
+                                      name="employment_type"
+                                      class="form-select"
+                                      id="floatingSelect"
+                                      aria-label="Floating label select example"
+                                    >
+                                      <option value="full-time">
+                                        Full-time
+                                      </option>
+                                      <option value="internship">
+                                        Internship
+                                      </option>
+                                    </select>
+                                    <label for="floatingSelect"
+                                      >Employment Type</label
+                                    >
+                                  </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <input
+                                      type="text"
+                                      name="department"
+                                      class="form-control"
+                                      id="passwordfloatingInput"
+                                      placeholder="Enter Tags"
+                                    />
+                                    <label for="passwordfloatingInput"
+                                      >Job Department</label
+                                    >
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <input
+                                      type="number"
+                                      name="opening_count"
+                                      class="form-control"
+                                      id="passwordfloatingInput"
+                                      placeholder="Enter Tags"
+                                    />
+                                    <label for="passwordfloatingInput"
+                                      >No. of Opening
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="form-floating">
+                                    <input
+                                      type="text"
+                                      name="experience"
+                                      class="form-control"
+                                      id="passwordfloatingInput"
+                                      placeholder="Enter Tags"
+                                    />
+                                    <label for="passwordfloatingInput"
+                                      >Required Experience
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="col-lg-12">
+                                  <div class="text-end">
+                                    <button
+                                      type="submit"
+                                      class="btn btn-primary"
+                                    >
+                                      Submit
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <!--start back-to-top-->
-    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
-        <i class="ri-arrow-up-line"></i>
+    <button
+      onclick="topFunction()"
+      class="btn btn-danger btn-icon"
+      id="back-to-top"
+    >
+      <i class="ri-arrow-up-line"></i>
     </button>
     <!--end back-to-top-->
 
     <!--preloader-->
     <div id="preloader">
-        <div id="status">
-            <div class="spinner-border text-primary avatar-sm" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+      <div id="status">
+        <div class="spinner-border text-primary avatar-sm" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
+      </div>
     </div>
 
     <div class="customizer-setting d-none d-md-block">
-        <div class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
-            <i class='mdi mdi-spin mdi-cog-outline fs-22'></i>
-        </div>
+      <div
+        class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#theme-settings-offcanvas"
+        aria-controls="theme-settings-offcanvas"
+      >
+        <i class="mdi mdi-spin mdi-cog-outline fs-22"></i>
+      </div>
     </div>
 
-
     <script type="importmap">
-        {
-            "imports": {
-                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.js",
-                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.1/"
-            }
+      {
+        "imports": {
+          "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.js",
+          "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.1/"
         }
+      }
     </script>
     <script type="module">
         import {
-            ClassicEditor,
-            Essentials,
-            Paragraph,
-            Bold,
-            Italic,
-            Font
-        } from 'ckeditor5';
-        ClassicEditor
-    .create(document.querySelector('#editor'), {
-        plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
-        toolbar: [
-            'undo', 'redo', '|', 'bold', 'italic', '|',
-            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-        ],
-        language: 'en',  // Set the language to English to default to LTR
-        alignment: {
-            options: ['left', 'center', 'right', 'justify']
-        },
-        // Explicitly set the direction of text to left-to-right
-        textDirection: 'ltr'
-    })
-    .then(editor => {
-        window.editor = editor;
-    })
-    .catch(error => {
-        console.error(error);
-    });
-
-
-    const token = "hsdguefg65sws%xsn$zsxs"; 
-    document.getElementById('blog-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-     console.log("create token ", token);
-     
-        // Check if the token exists
-        if (!token) {
-            alert('Authorization token is missing');
-            return; // Exit the function if the token is missing
-        }
-
-        // Prepare form data using FormData
-        const formData = new FormData(this); // 'this' refers to the form element
-
-        // Make a fetch request with the Authorization header and form data
-        fetch(this.action, {
-            method: this.method,
-            headers: {
-                'Authorization': 'Bearer ' + token, // Add the Authorization header
-            },
-            body: formData // Attach the form data
+          ClassicEditor,
+          Essentials,
+          Paragraph,
+          Bold,
+          Italic,
+          Font,
+        } from "ckeditor5";
+      
+        ClassicEditor.create(document.querySelector("#editor"), {
+          plugins: [Essentials, Paragraph, Bold, Italic, Font],
+          toolbar: [
+            "undo",
+            "redo",
+            "|",
+            "bold",
+            "italic",
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
+          ],
+          language: "en",
+          alignment: {
+            options: ["left", "center", "right", "justify"],
+          },
+          textDirection: "ltr",
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Events created successfully!');
-                this.reset();
-            } else {
-                alert('Error: ' + data.message);
+          .then((editor) => {
+            window.editor = editor;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      
+        const token = "hsdguefg65sws%xsn$zsxs";  // Replace this with the actual token.
+      
+        // Form submit event handler
+        document
+          .getElementById("job-create-form")
+          .addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+      
+            if (!token) {
+              alert("Authorization token is missing");
+              return; 
             }
-        })
-        .catch(error => {
-            alert('Something went wrong. Please try again.');
-        });
-    });
-    </script>
+      
+            const title = document.querySelector('[name="title"]').value;
+            const jobType = document.querySelector('[name="job_type"]').value;
+            const jobLocation = document.querySelector('[name="job_location"]').value;
+            const employmentType = document.querySelector('[name="employment_type"]').value;
+            const department = document.querySelector('[name="department"]').value;
+            const openingCount = document.querySelector('[name="opening_count"]').value;
+            const experience = document.querySelector('[name="experience"]').value;
+      
+            // Get CKEditor content
+            const description = window.editor.getData();
+      
+            // Prepare the form data as an object
+            const formData = {
+              title,
+              job_type: jobType,
+              job_location: jobLocation,
+              employment_type: employmentType,
+              department,
+              opening_count: openingCount,
+              experience,
+              description,  // CKEditor content
+            };
+      
+            console.log("Collected Form Data: ", formData);
+      
+            // Send the data to the API
+            fetch(this.action, {
+              method: this.method,
+              headers: {
+                Authorization: "Bearer " + token, // Add Authorization header
+                "Content-Type": "application/json", // Send JSON
+              },
+              body: JSON.stringify(formData), // Send the collected form data as JSON
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  alert("Job created successfully!");
+                  this.reset(); 
+                  window.editor.setData('');
+                } else {
+                  alert("Error: " + data.message);
+                }
+              })
+              .catch((error) => {
+                alert("Something went wrong. Please try again.");
+              });
+          });
+      </script>
+      
     <!-- A friendly reminder to run on a server, remove this during the integration. -->
     <script>
-        window.onload = function() {
-            if ( window.location.protocol === 'file:' ) {
-                alert( 'This sample requires an HTTP server. Please serve this file with a web server.' );
-            }
-        };
+      window.onload = function () {
+        if (window.location.protocol === "file:") {
+          alert(
+            "This sample requires an HTTP server. Please serve this file with a web server."
+          );
+        }
+      };
 
-        function updateEditorContent() {
-    // Get CKEditor content and set it to the hidden input field
-    var editorContent = window.editor.getData();
-    document.getElementById('editorContent').value = editorContent;
-}
-
+      function updateEditorContent() {
+        var editorContent = window.editor.getData();
+        if (!editorContent.trim()) {
+          alert("Job description is required.");
+          return false;
+        }
+        document.getElementById("editorContent").value = editorContent;
+      }
     </script>
-    
+
     <!-- JAVASCRIPT -->
     <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/libs/simplebar/simplebar.min.js"></script>
@@ -263,6 +419,5 @@
 
     <!-- App js -->
     <script src="/assets/js/app.js"></script>
-</body>
-
+  </body>
 </html>

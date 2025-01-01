@@ -10,13 +10,13 @@ const getAllJobs = async (searchValue, start, length, orderByColumn, orderDir) =
     const totalRecords = totalRecordsResult[0].total;
 
     const [filteredRecordsResult] = await MySqlPool.query(
-        `SELECT COUNT(*) AS total FROM job_list WHERE title LIKE ? OR skills LIKE ? OR job_location LIKE ? OR job_type LIKE ?`,
+        `SELECT COUNT(*) AS total FROM job_list WHERE title LIKE ? OR description LIKE ? OR job_location LIKE ? OR job_type LIKE ?`,
         [`%${searchValue}%`, `%${searchValue}%`, `%${searchValue}%`, `%${searchValue}%`]
     );
     const filteredRecords = filteredRecordsResult[0].total;
 
     const [data] = await MySqlPool.query(
-        `SELECT * FROM job_list WHERE title LIKE ? OR skills LIKE ? OR job_location LIKE ? OR job_type LIKE ?
+        `SELECT * FROM job_list WHERE title LIKE ? OR description LIKE ? OR job_location LIKE ? OR job_type LIKE ?
          ORDER BY ?? ${orderDir} LIMIT ?, ?`,
         [
             `%${searchValue}%`, 
@@ -32,6 +32,17 @@ const getAllJobs = async (searchValue, start, length, orderByColumn, orderDir) =
     return { totalRecords, filteredRecords, data };
 };
 
+const getJobById = async (id) => {
+    const [data] = await MySqlPool.query(`SELECT * FROM job_list WHERE ID = ?`, [id]);
+    return data[0] || null;
+};
+
+const deleteJobListById = async (id) => {
+    const [result] = await MySqlPool.query(`DELETE FROM job_list WHERE id = ?`, [id]);
+    return result.affectedRows > 0;
+};
+
+
 module.exports = {
-    getAllJobs
+    getAllJobs,deleteJobListById,getJobById
 };

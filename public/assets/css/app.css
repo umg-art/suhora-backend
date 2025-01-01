@@ -12521,6 +12521,13 @@ span.flatpickr-weekday {
   right: -8px;
   content: "✖";
 }
+#dbtables_wrapper {
+  width: 100%;
+  overflow-x:auto ;
+}
+.mdi-delete-empty, .mdi-file-edit-outline{
+  font-size: 20px
+}
 
 .dash-filter-picker {
   min-width: 210px !important;

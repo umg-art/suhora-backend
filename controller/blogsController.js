@@ -236,8 +236,6 @@ async function deleteBlogsController(req,res) {
   res.status(200).json({
     message : "Blog delete succesfully"
   })
-
-
 } 
   catch (error) {
     console.log("Error in delete blogs", error);

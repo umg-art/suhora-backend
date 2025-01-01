@@ -11,8 +11,7 @@ const {  getAllGalleryImages,
     createGalleryInstance,
     deleteGalleryImageById } = require("../controller/galleryController");
 const checkHeader = require("../middleware/checkApiAcces");
-const { getAllJobsOpening } = require("../controller/jobsController");
-const { getJobDetails, getUserJobResponse } = require("../controller/jobApplication");
+const { createJob,deleteJob, getJobDetailById, getAllJobsOpening,updateJob } = require("../controller/jobApplication");
 
 const uploadDirBlog = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'blogs');
 const uploadDirEvent = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'events');
@@ -234,6 +233,27 @@ router.get("/admin/jobs", isAuthenticated, async (req, res) => {
 router.get("/admin/jobs/create", isAuthenticated, async (req, res) => {
     res.render("joblist/create");
 });
+
+router.get("/admin/jobs/:id", isAuthenticated, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const response = await axios.get(`${baseurl}/api/jobs/${id}`, {
+            headers : {
+                Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+            }
+        });
+
+        if (response.data.success) {
+            return res.render("joblist/edit", { job: response.data.data });
+        } else {
+            return res.render("joblist/index", { errorMessage: "job not found" });
+        }
+    } catch (error) {
+        console.error("Something went wrong", error);
+        return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+    }
+});
+
 // ---------------------------------------- Login API ----------------------------------------
 router.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
@@ -283,8 +303,14 @@ router.get("/api/user-response",checkHeader, getUserResponse);
 
 
 // ------------------- Jobs Application --------------------------
-router.get("/api/jobs-application",checkHeader, getUserJobResponse)
-router.post('/api/jobs-response',checkHeader,  getJobDetails);
+router.post('/api/jobs/create',checkHeader,  createJob);
+router.delete('/api/jobs/delete/:id',checkHeader, deleteJob)
+router.get("/api/get-all-jobs",checkHeader, getAllJobsOpening)
+router.get("/api/jobs/:id",checkHeader, getJobDetailById)
+router.put('/api/jobs/edit/:id',checkHeader, updateJob);
+
+
+
 
 //------------------------------------------- Gallery ------------------------------
 router.get('/api/gallery',checkHeader, getAllGalleryImages)
@@ -292,5 +318,4 @@ router.delete('/api/gallery/delete/:id',checkHeader, deleteGalleryImageById)
 router.post('/api/gallery/create',checkHeader, uploadImages, createGalleryInstance)
 
 // -------------------------------Career ---------------------------------
-router.get("/api/get-all-jobs",checkHeader, getAllJobsOpening )
 module.exports = router;

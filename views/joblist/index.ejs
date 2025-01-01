@@ -1,24 +1,45 @@
-<!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
-
-<head>
-
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-layout="vertical"
+  data-topbar="light"
+  data-sidebar="dark"
+  data-sidebar-size="lg"
+  data-sidebar-image="none"
+  data-preloader="disable"
+>
+  <head>
     <meta charset="utf-8" />
     <title>Suhora | Jobs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      content="Premium Multipurpose Admin & Dashboard Template"
+      name="description"
+    />
     <meta content="Themesbrand" name="author" />
 
     <!-- jsvectormap css -->
-    <link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="/assets/libs/jsvectormap/css/jsvectormap.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
 
     <!--Swiper slider css-->
-    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="/assets/libs/swiper/swiper-bundle.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
 
     <!-- Layout config Js -->
     <script src="/assets/js/layout.js"></script>
     <!-- Bootstrap Css -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="/assets/css/bootstrap.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
     <!-- Icons Css -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <!-- App Css-->
@@ -28,174 +49,240 @@
     <!-- custom Css-->
     <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css"
+    />
+  </head>
 
-
-</head>
-
-<body>
-
+  <body>
     <!-- Begin page -->
     <div id="layout-wrapper">
-        <%- include('../layout/header'); -%>
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                        <h6 class="poopins">Home/Jobs-listing</h6>
-                        <hr>
-                    <div class="row">
-                        <div class="col">
-                            <div class="d-flex justify-content-end mt-2 mb-3">
-                                <a href="/admin/jobs/create" class="btn btn-success">Add Job</a>
-                            </div>
-                            <div class="h-100 container">
-                                <table id="dbtables" class="table table-striped" style="width: 100%; overflow-x: auto;">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Skills</th>
-                                            <th>Job location</th>
-                                            <th>Job type</th>
-                                            <th>Experiance</th>
-                                            <th>Employment type</th>
-                                            <th>Department</th>
-                                            <th>Opening count</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
+      <%- include('../layout/header'); -%>
+      <div class="main-content">
+        <div class="page-content">
+          <div class="container-fluid">
+            <h6 class="poopins">Home/Jobs-listing</h6>
+            <hr />
+            <div class="row">
+              <div class="col">
+                <div class="d-flex justify-content-end mt-2 mb-3">
+                  <a href="/admin/jobs/create" class="btn btn-success"
+                    >Add Job</a
+                  >
                 </div>
+                <div class="h-100 container w-full">
+                  <table
+                    id="dbtables"
+                    class="table table-hover"
+                    style="width: 100%; overflow-x: auto"
+                  >
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Job location</th>
+                        <th>Job type</th>
+                        <th>Experiance</th>
+                        <th>Employment type</th>
+                        <th>Department</th>
+                        <th>Opening count</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <!--start back-to-top-->
-    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
-        <i class="ri-arrow-up-line"></i>
+    <button
+      onclick="topFunction()"
+      class="btn btn-danger btn-icon"
+      id="back-to-top"
+    >
+      <i class="ri-arrow-up-line"></i>
     </button>
     <!--end back-to-top-->
 
     <!--preloader-->
     <div id="preloader">
-        <div id="status">
-            <div class="spinner-border text-primary avatar-sm" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+      <div id="status">
+        <div class="spinner-border text-primary avatar-sm" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
+      </div>
     </div>
 
     <div class="customizer-setting d-none d-md-block">
-        <div class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
-            <i class='mdi mdi-spin mdi-cog-outline fs-22'></i>
-        </div>
+      <div
+        class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#theme-settings-offcanvas"
+        aria-controls="theme-settings-offcanvas"
+      >
+        <i class="mdi mdi-spin mdi-cog-outline fs-22"></i>
+      </div>
     </div>
 
-  <!-- Datatables -->
-  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-  <script>
-    $(document).ready(function () {
-        $('#dbtables').DataTable({
-            "order": [[0, "desc"]],
-            "processing": true,
-            "serverSide": true,
-            "initComplete": function (settings, json) {
-                $('#dbtables').show();
-            },
-            "select": true,
-            "searching": true,  // Enables search box
-            "info": true,       // Shows table info
-            "paging": true,     // Enables pagination
-            "pageLength": 10,   // Default entries per page
-            "columns": [
-                { "data": "id" },
-                { 
-                    "data": "title",
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                 },
-                {
-                    "data": "skills",
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                },
-                {
-                    "data": "job_location",
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                },
-                {
-                    "data": "job_type",
-                    "render": function (data, type, row) {
-                        return data ? `<div class="truncate">${data}</div>` : `<div class="truncate">-</div>`;
+    <!-- Datatables -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script>
+          $(document).ready(function () {
+              $('#dbtables').DataTable({
+                  "order": [[0, "desc"]],
+                  "processing": true,
+                  "serverSide": true,
+                  "initComplete": function (settings, json) {
+                      $('#dbtables').show();
+                  },
+                  "select": true,
+                  "searching": true,
+                  "info": true, 
+                  "paging": true,
+                  "pageLength": 10,
+                  "columns": [
+                      { "data": "id" },
+                      {
+                          "data": "title",
+                          "render": function (data, type, row) {
+                              return `<div class="truncate">${data}</div>`;
+                          }
+                       },
+                       {
+                            "data": "description",
+                            "render": function (data, type, row) {
+                                let truncatedData = data.length > 100 ? data.substring(0, 100) + '...' : data;
+                                return `<div class="truncate">${truncatedData}</div>`;
+                            }
+                        },
+                      {
+                          "data": "job_location",
+                          "render": function (data, type, row) {
+                              return `<div class="truncate">${data}</div>`;
+                          }
+                      },
+                      {
+                          "data": 'job_type',
+                          "render": function (data, type, row) {
+                              let displayText;
 
-                    }
-                },
-                {
-                    "data": 'experience',
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                },
-                {
-                    "data": 'employment_type',
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                },
-                {
-                    "data": 'department',
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                },
-                {
-                    "data": 'opening_count',
-                    "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
-                    }
-                },
-                {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        return `
-                            <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
-                        `;
-                    }
-            }
-            ],
-            "language": {
-                "emptyTable": "No Data to show!"
-            },
-            "ajax": {
-                'type': "GET",
-                "url": '/api/get-all-jobs',
-                "contentType": "application/json; charset=utf-8",
-                "dataType": "json",
-                "dataSrc": function (json) {
-                    return json.data;
-                },
-               "headers": {
-                    'authorization': `Bearer hsdguefg65sws%xsn$zsxs`, 
-                }
-            }
-        });
-    });
-</script>
+                              // Map the raw value to a readable label
+                              switch (data) {
+                                  case 'work_from_office':
+                                      displayText = 'Work from office';
+                                      break;
+                                  case 'work_from_home':
+                                      displayText = 'Work from home';
+                                      break;
+                                  case 'hybrid_job':
+                                      displayText = 'Hybrid job';
+                                      break;
+                                  default:
+                                      displayText = data;  // Default to showing raw data if no match
+                              }
 
+                              return `<div class="truncate">${displayText}</div>`;
+                          }
+                      },
+                      {
+                          "data": 'experience',
+                          "render": function (data, type, row) {
+                              return `<div class="truncate">${data}</div>`;
+                          }
+                      },
+                      {
+                          "data": 'employment_type',
+                          "render": function (data, type, row) {
+                              return `<div class="truncate">${data}</div>`;
+                          }
+                      },
+                      {
+                          "data": 'department',
+                          "render": function (data, type, row) {
+                              return `<div class="truncate">${data}</div>`;
+                          }
+                      },
+                      {
+                          "data": 'opening_count',
+                          "render": function (data, type, row) {
+                              return `<div class="truncate">${data}</div>`;
+                          }
+                      },
+                      {
+                          "data": null,
+                          "render": function (data, type, row) {
+                              return `
+                               <div class="d-flex gap-2">
+                                  <a href="/admin/jobs/${row.id}" type="button" class="btn btn-success btn-sm edit-btn" data-id="${row.id}"><span class="mdi mdi-file-edit-outline"></span></a>
+                                  <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="${row.id}"><span class="mdi mdi-delete-empty"></span></button>
+                                </div>
+                              `;
+                          }
+                  }
+                  ],
+                  "language": {
+                      "emptyTable": "No Data to show!"
+                  },
+                  "ajax": {
+                      'type': "GET",
+                      "url": '/api/get-all-jobs',
+                      "contentType": "application/json; charset=utf-8",
+                      "dataType": "json",
+                      "dataSrc": function (json) {
+                          return json.data;
+                      },
+                     "headers": {
+                          'authorization': `Bearer hsdguefg65sws%xsn$zsxs`,
+                      }
+                  }
+              });
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+           // Delete the job
+              $('#dbtables').on('click', '.delete-btn', function() {
+              const id = $(this).data('id'); // Get the ID of the row to delete
+
+              if (confirm('Are you sure you want to delete this item?')) {
+                  // Make an AJAX request to delete the item
+                  $.ajax({
+                      url: `/api/jobs/delete/${id}`,
+                      type: 'DELETE',
+                      headers: {
+                          'Authorization': 'Bearer hsdguefg65sws%xsn$zsxs',  // Pass the Authorization token in the header
+                      },
+                      success: function(response) {
+                        console.log("response", response);
+                        
+                          if (response.success) {
+                              alert('Item deleted successfully!');
+                              $('#dbtables').DataTable().ajax.reload();
+                          } else {
+                              alert('Error: ' + response.message);
+                          }
+                      },
+                      error: function(xhr, status, error) {
+                          alert('Something went wrong. Please try again.');
+                      }
+                  });
+              }
+          });
+
+      });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 
     <!-- JAVASCRIPT -->
     <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -219,6 +306,5 @@
 
     <!-- App js -->
     <script src="/assets/js/app.js"></script>
-</body>
-
+  </body>
 </html>
