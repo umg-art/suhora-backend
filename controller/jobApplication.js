@@ -65,7 +65,6 @@ async function getUserJobResponse(req, res) {
 
 async function createJob(req,res) {
     try {
-        console.log("log the request", req.body);
         const { title, description, job_location, job_type, experience, employment_type, department, opening_count } = req.body;
      
         if (!title || !description || !job_location || !job_type || !experience || !employment_type || !department || !opening_count) {
@@ -78,11 +77,15 @@ async function createJob(req,res) {
 
         let slug = generateSlug(title)
         slug = `${slug}-${Date.now()}`;
+
+        const dep = department.toLowerCase();
+        console.log("department", dep);
+        
         
         const dataInsert = await MySqlPool.query(
             `INSERT INTO \`job_list\` (slug, title, description, job_location, job_type, experience, employment_type, department, opening_count) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [slug, title, description, job_location, job_type, experience, employment_type, department, opening_count]
+            [slug, title, description, job_location, job_type, experience, employment_type, dep, opening_count]
         );
         if (!dataInsert) {
             return res.status(400).send({
@@ -163,7 +166,7 @@ async function getAllJobsOpening(req, res) {
             'title', 'skills', 'job_location', 'job_type', 'experience', 'employment_type', 'department', 'opening_count'
         ];
 
-        const orderBy = columns[sortColumnIndex] || 'title'; // Default to 'title' if invalid index is provided
+        const orderBy = columns[sortColumnIndex] || 'title';
 
         const result = await getAllJobs(searchValue, start, length, orderBy, sortDirection);
 
@@ -183,7 +186,7 @@ async function getAllJobsOpening(req, res) {
 async function updateJob(req, res) {
     try {
         const id = req.params.id; 
-        console.log("update req", req.body);
+        // console.log("update req", req.body);
         
         const { title, description, job_location, job_type, experience, employment_type, department, opening_count } = req.body;
 

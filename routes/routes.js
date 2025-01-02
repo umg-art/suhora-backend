@@ -12,6 +12,7 @@ const {  getAllGalleryImages,
     deleteGalleryImageById } = require("../controller/galleryController");
 const checkHeader = require("../middleware/checkApiAcces");
 const { createJob,deleteJob, getJobDetailById, getAllJobsOpening,updateJob } = require("../controller/jobApplication");
+const { getJobApplication, getJobApplicationList, viewCandidate } = require("../controller/jobCandidate");
 
 const uploadDirBlog = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'blogs');
 const uploadDirEvent = path.join(__dirname, '..', 'public', 'assets', 'uploads', 'events');
@@ -92,7 +93,50 @@ const isAuthenticated = (req, res, next) => {
 
 router.get("/", (req,res)=>{
   return res.redirect("/admin/events")
-})
+});
+// ------------------------------------------ Job Application -----------------------
+
+router.get("/admin/job-application", isAuthenticated, async (req, res) => {
+    try {
+        const response = await axios.get(`${baseurl}/api/job-application`, {
+            headers : {
+                Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+            }
+        });
+        
+        if (response.data.success) {
+            return res.render("jobapplication/index", { blog: response.data.data[0] });
+        } else {
+            return res.render("jobapplication/index", { errorMessage: "No user found" });
+        }
+    } catch (error) {
+        console.log("Something went wrong", error);
+        return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+    }
+});
+
+router.get("/admin/job-application/:id", isAuthenticated, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const response = await axios.get(`${baseurl}/api/job-application/${id}`, {
+            headers : {
+                Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
+            }
+        });
+        console.log("responce", response);
+        
+        if (response.data.success) {
+            return res.render("jobapplication/viewCandidate", { candidate: response.data.data });
+
+        } else {
+            return res.render("jobapplication/viewCandidate", { errorMessage: "Candidate not found" });
+        }
+    } 
+    catch (error) {
+        console.log("Something went wrong", error);
+        return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+    }
+});
 // ---------------------------------------------- gallery  -----------------------------------------
 router.get("/admin/gallery", isAuthenticated, async (req, res) => {
     try {
@@ -242,7 +286,8 @@ router.get("/admin/jobs/:id", isAuthenticated, async (req, res) => {
                 Authorization: `Bearer ${process.env.API_ACCESS_KEY}`
             }
         });
-
+        console.log("responce", response);
+        
         if (response.data.success) {
             return res.render("joblist/edit", { job: response.data.data });
         } else {
@@ -257,8 +302,6 @@ router.get("/admin/jobs/:id", isAuthenticated, async (req, res) => {
 // ---------------------------------------- Login API ----------------------------------------
 router.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
-
-    console.log("Data entered:", email, password);  // Corrected
 
     if (email === process.env.ADMIN_LOGIN_EMAIL && password === process.env.ADMIN_LOGIN_PASSWORD) {
         req.session.uid = Date.now();
@@ -291,11 +334,11 @@ router.put('/api/blogs/update/:id',checkHeader, upload.single('image'), updateBl
 router.post('/api/blogs/create',checkHeader, upload.single('image') , createBlogController);  // Create blog
 
 // ------------------------------------------- Events API -------------------------------------------
-router.get('/api/events',checkHeader, eventController.getEvents);  // Get all events with pagination
+router.get('/api/events',checkHeader, eventController.getEvents);
 router.get('/api/event/:id',checkHeader, eventController.getEventById);  // Get event by ID
 router.post('/api/events/create',checkHeader, uploadEvents.single('image') , eventController.createEvent);  // Create a new event
 router.put('/api/events/update/:id',checkHeader, uploadEvents.single('image'),  eventController.updateEvent);  // Update event by ID
-// router.delete('/api/events/:id', eventController.deleteEvent);  // Delete event by ID
+// router.delete('/api/events/:id', eventController.deleteEvent);
 
 // Form data routes (for user demo)
 router.post('/api/book-demo',checkHeader,  getFormDataEmail);
@@ -309,7 +352,9 @@ router.get("/api/get-all-jobs",checkHeader, getAllJobsOpening)
 router.get("/api/jobs/:id",checkHeader, getJobDetailById)
 router.put('/api/jobs/edit/:id',checkHeader, updateJob);
 
-
+router.post("/api/job-application/apply",checkHeader,getJobApplication)
+router.get("/api/job-application", checkHeader, getJobApplicationList)
+router.get("/api/job-application/:id", checkHeader, viewCandidate)
 
 
 //------------------------------------------- Gallery ------------------------------

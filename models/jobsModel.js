@@ -42,7 +42,11 @@ const deleteJobListById = async (id) => {
     return result.affectedRows > 0;
 };
 
+const getCandidate = async(id) =>{
+    const [data] = await MySqlPool.query(`SELECT * FROM job_application WHERE ID = ?`, [id]);
+    return data[0] || null;
+}
 
 module.exports = {
-    getAllJobs,deleteJobListById,getJobById
+    getAllJobs,deleteJobListById,getJobById,getCandidate
 };

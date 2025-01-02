@@ -4,7 +4,6 @@ const { sendDemoEmail } = require("../services/sendEmail");
 async function getFormDataEmail(req, res) {
     const connection = await MySqlPool.getConnection();
     try {
-        // Start a transaction
         await connection.beginTransaction();
 
         const { name, email, phone, message, resource,subject } = req.body;
@@ -18,16 +17,13 @@ async function getFormDataEmail(req, res) {
             });
         }
 
-        // Send email notification
-        await sendDemoEmail({ name, email, phone, message,resource, subject });
+        //await sendDemoEmail({ name, email, phone, message,resource, subject });
 
-        // Insert the form data into the database only if the email is sent successfully
         const [userdata] = await connection.query(
             `INSERT INTO get_in_touch_fe (name, email, phone, message, resource) VALUES (?, ?, ?, ?,?)`,
             [name, email, phone, message,resource]
         );
 
-        // If data was successfully inserted, commit the transaction
         if (userdata.affectedRows > 0) {
             await connection.commit();
             return res.status(200).send({
@@ -36,7 +32,6 @@ async function getFormDataEmail(req, res) {
                 data: userdata,
             });
         } else {
-            // Rollback if the data insertion fails
             await connection.rollback();
             return res.status(400).send({
                 success: false,
@@ -44,7 +39,6 @@ async function getFormDataEmail(req, res) {
             });
         }
     } catch (error) {
-        // Rollback the transaction in case of any errors (either email or DB)
         await connection.rollback();
         console.error("Error in getFormDataEmail:", error);
         res.status(500).send({
@@ -63,7 +57,6 @@ async function getUserResponse(req, res) {
     try {
         let { draw, start, length, search, order } = req.query;
 
-        // Sanitize and validate start and length
         start = parseInt(start) || 0;  // Default to 0 if invalid or missing
         length = parseInt(length) || 10;  // Default to 10 if invalid or missing
 
@@ -71,7 +64,6 @@ async function getUserResponse(req, res) {
         const orderColumnIndex = order ? parseInt(order[0].column) : 0;  // Column index for ordering
         const orderDir = order ? order[0].dir : 'asc';  // Order direction
 
-        // Map column indexes to database column names
         const columns = ["id", "name", "email", "phone", "message", "resource"];
         const orderByColumn = columns[orderColumnIndex] || 'id';  // Default to 'id' if no valid column
 
