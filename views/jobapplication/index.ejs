@@ -132,7 +132,7 @@
                 {
                     "data": "experience",
                     "render": function (data, type, row) {
-                        return data ? `<div class="truncate">${data}</div>` : `<div class="truncate">-</div>`;
+                        return data ? `<div class="truncate">${data} yr</div>` : `<div class="truncate">-</div>`;
 
                     }
                 },
@@ -151,7 +151,12 @@
                 {
                     "data": 'resume',
                     "render": function (data, type, row) {
-                        return `<div class="truncate">${data}</div>`;
+                        const resumeUrl = data.replace('/public','')
+                        return `
+                         <a href="${resumeUrl}" target="_blank">
+                            Resume
+                        </a>
+                       `;
                     }
                 },
                 {

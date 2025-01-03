@@ -6,9 +6,10 @@ async function getJobApplication(req, res) {
     try {
         await connection.beginTransaction();
 
-        const { name, email, phone_no, experience, current_company,job_position,resume,location } = req.body;
+        const { name, email, phone_no, experience, current_company, job_position, location } = req.body;        
+        const resumePath = req.file ? `/assets/uploads/resume/${req.file.filename}` : null;
 
-        if (!name || !email || !phone_no || !experience || !current_company || !job_position || !resume || !location) {
+        if (!name || !email || !phone_no || !experience || !current_company || !resumePath || !location) {
             return res.status(400).send({
                 success: false,
                 message: "All fields are required",
@@ -18,7 +19,7 @@ async function getJobApplication(req, res) {
 
         const [userdata] = await connection.query(
             `INSERT INTO job_application (name, email, phone_no, experience, current_company, job_position, resume, location) VALUES (?,?,?,?,?,?,?,?)`,
-            [name, email, phone_no, experience,current_company,job_position,resume, location]
+            [name, email, phone_no, experience, current_company, job_position, resumePath, location]
         );
 
         if (userdata.affectedRows > 0) {
@@ -37,7 +38,7 @@ async function getJobApplication(req, res) {
         }
     } catch (error) {
         await connection.rollback();
-        console.error("Error in getFormDataEmail:", error);
+        console.error("Error in getJobApplication:", error);
         res.status(500).send({
             success: false,
             message: "Something went wrong",
@@ -56,9 +57,9 @@ async function getJobApplicationList(req, res) {
         start = parseInt(start) || 0;
         length = parseInt(length) || 10;
 
-        const searchValue = search?.value || '';  // Handle search input
+        const searchValue = search?.value || '';
         const orderColumnIndex = order ? parseInt(order[0].column) : 0;
-        const orderDir = order ? order[0].dir : 'asc';  // Order direction
+        const orderDir = order ? order[0].dir : 'asc';  // Order 
 
         const columns = ["id", "name", "email", "phone_no", "experience", "current_company", "job_position", "resume", "location"];
         const orderByColumn = columns[orderColumnIndex] || 'id';

@@ -60,7 +60,11 @@
                                                         <p><strong>Location:</strong> <%= candidate.location %></p>
                                                         <p><strong>Current Company:</strong> <%= candidate.current_company %></p>
                                                         <!-- <p><strong>Job Position:</strong> <%= candidate.job_position %></p> -->
-                                                        <p><strong>Resume:</strong> <%= candidate.resume %></p>
+                                                        <p><strong>Resume:</strong>
+                                                            <a href="<%= candidate.resume.replace('/public', '') %>" target="_blank" rel="noopener noreferrer">
+                                                                View Resume
+                                                            </a>
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
