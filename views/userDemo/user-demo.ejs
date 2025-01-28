@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="h-100">
-                                <table id="dbtables" class="table table-striped" style="width: 100%; overflow-x: auto;">
+                                <table id="dbtables" class="table table-striped tabel-bordered" style="width: 100%; overflow-x: auto;">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -56,6 +56,9 @@
                                             <th>Phone</th>
                                             <th>Resources</th>
                                             <th>Messages</th>
+                                            <th>Received Time</th>
+                                            <th>Actions</th>
+
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -138,7 +141,23 @@
                     "render": function (data, type, row) {
                         return `<div class="truncate">${data}</div>`;
                     }
+                },
+                {
+                    "data": "created_at",
+                    "render": function (data, type, row) {
+                        if (!data) return `<div class="truncate">-</div>`;
+                        const formattedDate = new Date(data).toISOString().slice(0, 19).replace('T', ' ');
+                        return `<div class="truncate">${formattedDate}</div>`;
+                    }
+                },
+                {
+                    "data": "null",
+                    "render": function (data, type, row) {
+                       return ` <a href="/admin/user-response/${row.id}" type="button" class="btn btn-primary btn-sm edit-btn" data-id="${row.id}"><span class="mdi mdi-eye-outline"></span></a>`
+                    }
                 }
+
+
             ],
             "language": {
                 "emptyTable": "No Data to show!"

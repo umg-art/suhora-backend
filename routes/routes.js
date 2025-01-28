@@ -6,7 +6,7 @@ const {
   updateBlogIdConrtoller,
 } = require("../controller/blogsController");
 const { default: axios } = require("axios");
-const { getFormDataEmail, getUserResponse } = require("../controller/formdata");
+const { getFormDataEmail, getUserResponse, viewResponse } = require("../controller/formdata");
 const eventController = require("../controller/EventsController");
 const router = express.Router();
 const path = require("path");
@@ -366,6 +366,35 @@ router.get("/admin/user-response", isAuthenticated, async (req, res) => {
       });
   }
 });
+
+router.get("/admin/user-response/:id", isAuthenticated, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const response = await axios.get(`${baseurl}/api/user-response/${id}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_ACCESS_KEY}`,
+      },
+    });
+    if (response.data.success) {
+      return res.render("userDemo/viewRes", { res: response.data.data[0] });
+    } else {
+      return res.render("userDemo/viewRes", {
+        errorMessage: "No response found",
+      });
+    }
+  } catch (error) {
+    console.log("Something went wrong", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "An error occurred",
+        error: error.message,
+      });
+  }
+});
+
+
 // ---------------------------------------- Jobs --------------------------------------
 router.get("/admin/jobs", isAuthenticated, async (req, res) => {
   try {
@@ -496,6 +525,8 @@ router.put(
 // Form data routes (for user demo)
 router.post("/api/book-demo", checkHeader, getFormDataEmail);
 router.get("/api/user-response", checkHeader, getUserResponse);
+router.get("/api/user-response/:id", checkHeader, viewResponse);
+
 
 // ------------------- Jobs Application --------------------------
 router.post("/api/jobs/create", checkHeader, createJob);

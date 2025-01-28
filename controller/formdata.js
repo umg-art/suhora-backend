@@ -88,7 +88,7 @@ async function getUserResponse(req, res) {
 
         // Respond with data in DataTables format
         res.status(200).json({
-            draw: parseInt(draw),  // draw count to synchronize with DataTables request
+            draw: parseInt(draw),
             recordsTotal: totalRecords,  // total number of records
             recordsFiltered: filteredRecords,  // total number of records after filtering
             data: data  // array of user response records
@@ -104,6 +104,34 @@ async function getUserResponse(req, res) {
     }
 }
 
+async function viewResponse(req,res) {
+    try {
+        const id = req?.params?.id
+        const data = await MySqlPool.query(`SELECT * FROM get_in_touch_fe WHERE ID=${id}`)
+        
+        if (!data) {
+            res.status(400).send({
+                success: false,
+                message: "data not get by id",
+            })
+        }
+
+        res.status(200).send({
+            success: true,
+            message: "data fetch succes",
+            data: data[0]
+        })
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error to get data using id",
+            error
+        });
+    }
+}
+
 module.exports = {
-    getFormDataEmail,getUserResponse
+    getFormDataEmail,getUserResponse,viewResponse
 }
