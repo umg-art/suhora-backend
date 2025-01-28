@@ -66,16 +66,16 @@
       <div class="main-content">
         <div class="page-content">
           <div class="container-fluid">
-            <h6 class="poopins">Home/Jobs-listing</h6>
+            <div class="d-flex justify-content-between mt-2 mb-3">
+              <h6 class="poopins">Home/Job list</h6>
+              <a href="/admin/jobs/create" class="btn btn-success"
+                >Add Job</a
+              >
+            </div>
             <hr />
             <div class="row">
               <div class="col">
-                <div class="d-flex justify-content-end mt-2 mb-3">
-                  <a href="/admin/jobs/create" class="btn btn-success"
-                    >Add Job</a
-                  >
-                </div>
-                <div class="h-100 container w-full">
+                <div class="h-100 w-full">
                   <table
                     id="dbtables"
                     class="table table-hover"
@@ -140,7 +140,7 @@
     <script>
           $(document).ready(function () {
               $('#dbtables').DataTable({
-                  "order": [[0, "desc"]],
+                  "order": [[0, "asc"]],
                   "processing": true,
                   "serverSide": true,
                   "initComplete": function (settings, json) {

@@ -59,13 +59,14 @@
                     </div>
                 <% } %> 
                 <div class="container-fluid">
-                    <h6 class="poopins">Home/Gallery</h6>
+                    <div class="d-flex justify-content-between mt-2 mb-3">
+                        <h6 class="poopins">Home/gallery</h6>
+                        <a href="/admin/gallery/create" class="btn btn-success">Add images</a>
+                    </div>
+                    <hr>
                     <div class="row">
                         <div class="col">
                             <div class="h-100 container">
-                                <div class="d-flex justify-content-end mt-2 mb-3">
-                                    <a href="/admin/gallery/create" class="btn btn-success">Add images</a>
-                                </div>
                                 <table id="dbtables" class="table table-striped" style="width: 100%; overflow-x: auto;">
                                     <thead>
                                         <tr>
@@ -144,7 +145,7 @@
         "searching": true,  // Enables search box
         "info": true,       // Shows table info
         "paging": true,     // Enables pagination
-        "pageLength": 20,   // Default entries per page
+        "pageLength": 10,   // Default entries per page
         "columns": [
             { "data": "id" },
             { 

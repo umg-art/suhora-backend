@@ -46,7 +46,7 @@
                         <hr>
                     <div class="row">
                         <div class="col">
-                            <div class="h-100 container">
+                            <div class="h-100">
                                 <table id="dbtables" class="table table-striped" style="width: 100%; overflow-x: auto;">
                                     <thead>
                                         <tr>
@@ -98,7 +98,7 @@
   <script>
     $(document).ready(function () {
         $('#dbtables').DataTable({
-            "order": [[0, "desc"]],
+            "order": [[0, "asc"]],
             "processing": true,
             "serverSide": true,
             "initComplete": function (settings, json) {

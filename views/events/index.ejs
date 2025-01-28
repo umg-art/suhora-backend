@@ -54,14 +54,15 @@
                     </div>
                 <% } %> 
                 <div class="container-fluid">
-                    <h6 class="poopins">Home/Events</h6>
+                    <div class="d-flex justify-content-between mt-2">
+                        <h6 class="poopins">Home/events</h6>
+                        <a href="/admin/events/create" class="btn btn-success">Create Event</a>
+                    </div>
+                    <hr>
                     <div class="row">
                         <div class="col">
-                            <div class="h-100 container">
-                                <div class="d-flex justify-content-end mt-2 mb-3">
-                                    <a href="/admin/events/create" class="btn btn-success">Create Event</a>
-                                </div>
-                                <table id="dbtables" class="table table-striped" style="width: 100%; overflow-x: auto;">
+                            <div class="h-100">
+                                <table id="dbtables" class="table table-striped table-bordered" style="width: 100%; overflow-x: auto;">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -123,7 +124,7 @@
   <script>
     $(document).ready(function () {
         $('#dbtables').DataTable({
-            "order": [[0, "desc"]],
+            "order": [[0, "asc"]],
             "processing": true,
             "serverSide": true,
             "initComplete": function (settings, json) {

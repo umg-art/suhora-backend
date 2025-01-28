@@ -3326,8 +3326,8 @@ code {
 
 #back-to-top {
   position: fixed;
-  bottom: 100px;
-  left: 28px;
+  bottom: 20px;
+  /* left: 28px; */
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   display: none;

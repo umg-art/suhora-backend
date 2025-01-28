@@ -42,10 +42,11 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
-                        <h6 class="poopins">Home/User-reachout</h6>
+                        <h6 class="poopins">Home/user-reachout</h6>
+                        <hr>
                     <div class="row">
                         <div class="col">
-                            <div class="h-100 container">
+                            <div class="h-100">
                                 <table id="dbtables" class="table table-striped" style="width: 100%; overflow-x: auto;">
                                     <thead>
                                         <tr>
@@ -94,7 +95,7 @@
   <script>
     $(document).ready(function () {
         $('#dbtables').DataTable({
-            "order": [[0, "desc"]],
+            "order": [[0, "asc"]],
             "processing": true,
             "serverSide": true,
             "initComplete": function (settings, json) {

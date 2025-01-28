@@ -10,7 +10,7 @@ async function getEvents(req, res) {
         length = parseInt(length) || 10;
         const searchValue = search?.value || '';
         const orderColumn = order ? parseInt(order[0].column) : 0;
-        const orderDir = order ? order[0].dir : 'desc';
+        const orderDir = order ? order[0].dir : 'asc';
 
         const columns = ["id", "title", "slug", "description", "created_at", "updated_at", "status", "image", "tags"];
         const orderByColumn = columns[orderColumn] || 'id';
